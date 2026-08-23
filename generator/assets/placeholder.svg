@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Image coming soon">
+  <rect width="400" height="400" fill="#f3f3f3"/>
+  <g fill="none" stroke="#c9c9c9" stroke-width="6" stroke-linecap="round">
+    <rect x="128" y="118" width="144" height="200" rx="16"/>
+    <line x1="168" y1="150" x2="232" y2="150"/>
+  </g>
+  <text x="200" y="352" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#8a8a8a" text-anchor="middle">Image coming soon</text>
+</svg>

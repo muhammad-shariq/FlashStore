@@ -1,0 +1,31 @@
+<div class="head">
+  <h1>Categories &amp; brands</h1>
+  <div class="head__actions">
+    <a class="btn" href="/categories/new">New category</a>
+    <a class="btn btn--primary" href="/publish">Publish</a>
+  </div>
+</div>
+
+<p class="hint">The Shopify export contained no collections — <code>Tags</code> was empty on every product and <code>Type</code> was set on only three. This taxonomy was derived from the product titles and is yours to change. Categories appear at <code>/collections/&lt;slug&gt;/</code>; brands at <code>/brands/&lt;slug&gt;/</code>.</p>
+
+<% [['Categories', categories], ['Brands', brands]].forEach(function (pair) { %>
+<div class="panel" style="padding:0">
+  <div class="panel__head" style="padding:1rem 1.15rem 0"><h2><%= pair[0] %></h2></div>
+  <table>
+    <thead><tr><th class="num" style="width:70px">Order</th><th>Name</th><th>Slug</th><th class="num">Products</th><th>Featured</th><th>Intro copy</th><th></th></tr></thead>
+    <tbody>
+      <% pair[1].forEach(function (c) { %>
+      <tr>
+        <td class="num"><%= c.position %></td>
+        <td><a href="/categories/<%= c.id %>"><%= c.name %></a></td>
+        <td class="mono"><%= c.slug %></td>
+        <td class="num"><%= c.product_count %></td>
+        <td><% if (c.featured) { %><span class="tag tag--ok">homepage</span><% } %></td>
+        <td><% if (c.description && c.description.length > 80) { %><span class="tag tag--ok">yes</span><% } else { %><span class="tag tag--warn">thin</span><% } %></td>
+        <td class="num"><a class="btn btn--sm" href="/categories/<%= c.id %>">Edit</a></td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+<% }); %>

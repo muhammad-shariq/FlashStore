@@ -1,0 +1,18 @@
+<%- include('partials/breadcrumbs', { trail }) %>
+<div class="wrap">
+  <div class="page-head">
+    <h1><%= pageData.heading %></h1>
+    <% if (pageData.intro) { %><p><%= pageData.intro %></p><% } %>
+  </div>
+  <div class="prose" style="padding-bottom:2rem"><%- pageData.body %></div>
+  <% if (pageData.faq && pageData.faq.length) { %>
+  <section class="section" aria-labelledby="page-faq">
+    <h2 id="page-faq">Frequently asked questions</h2>
+    <div class="accordion">
+      <% pageData.faq.forEach(function (f) { %>
+      <details><summary><%= f.q %></summary><div class="accordion__body prose"><p><%= f.a %></p></div></details>
+      <% }); %>
+    </div>
+  </section>
+  <% } %>
+</div>

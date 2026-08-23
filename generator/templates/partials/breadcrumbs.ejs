@@ -1,0 +1,9 @@
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="wrap">
+    <ol>
+      <% trail.forEach(function (item, i) { %>
+      <li><% if (i === trail.length - 1) { %><span aria-current="page"><%= item.name %></span><% } else { %><a href="<%= item.url %>"><%= item.name %></a><% } %></li>
+      <% }); %>
+    </ol>
+  </div>
+</nav>

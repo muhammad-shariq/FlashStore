@@ -1,0 +1,100 @@
+<div class="head">
+  <h1>Publish</h1>
+  <div class="head__actions"><a class="btn" href="/site/" target="_blank" rel="noopener">Preview site ↗</a></div>
+</div>
+
+<div class="note note--info">
+  <strong>Two steps, on purpose.</strong>
+  <em>Generate</em> rewrites <code>web/</code> from the database — local and repeatable, with no effect on the live site.
+  <em>Commit &amp; push</em> is what triggers the DigitalOcean deploy. Keeping them apart means saving a product can never deploy the site by accident.
+</div>
+
+<div class="cols">
+  <div>
+    <div class="panel">
+      <div class="panel__head"><h2>1. Generate the site</h2></div>
+      <p class="hint">Rewrites every page from the database and runs the SEO checks. A build that fails those checks is reported here and is not safe to push.</p>
+      <form method="post" action="/publish/build">
+        <button class="btn btn--primary" type="submit">Generate now</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head"><h2>2. Commit &amp; push</h2></div>
+      <% if (!isRepo) { %>
+      <div class="note">
+        <strong>Not a git repository yet.</strong> Run these once in the project folder, then reload this page:
+        <pre class="log" style="margin-top:.5rem">git init
+git add -A
+git commit -m "Initial import from Shopify"
+git branch -M main
+git remote add origin git@github.com:&lt;you&gt;/FlashStore.git
+git push -u origin main</pre>
+      </div>
+      <% } else { %>
+      <p class="hint">
+        Branch <code><%= branch || '—' %></code>
+        <% if (remote) { %>→ <code><%= remote %></code><% } else { %>— <strong>no remote configured</strong>, so a push will fail.<% } %>
+      </p>
+      <% if (!changes.length) { %>
+      <p class="hint">No uncommitted changes. Generate first if you have edited anything.</p>
+      <% } else { %>
+      <p><strong><%= changes.length %></strong> changed file<%= changes.length === 1 ? '' : 's' %>:</p>
+      <pre class="log"><%= changes.slice(0, 40).join('\n') %><%= changes.length > 40 ? '\n… and ' + (changes.length - 40) + ' more' : '' %></pre>
+      <% } %>
+      <form method="post" action="/publish/push">
+        <div class="field" style="max-width:420px">
+          <label for="message">Commit message</label>
+          <input id="message" name="message" type="text" value="Update catalogue" required>
+        </div>
+        <div class="field" style="max-width:220px">
+          <label for="confirm">Type <code>PUSH</code> to confirm</label>
+          <input id="confirm" name="confirm" type="text" autocomplete="off" required>
+        </div>
+        <button class="btn btn--danger" type="submit"<%= changes.length ? '' : ' disabled' %>>Commit &amp; push (deploys the site)</button>
+      </form>
+      <% } %>
+    </div>
+
+    <% if (output) { %>
+    <div class="panel">
+      <div class="panel__head"><h2>Log</h2></div>
+      <pre class="log"><%= output %></pre>
+    </div>
+    <% } %>
+  </div>
+
+  <div>
+    <div class="panel">
+      <div class="panel__head"><h2>Recent builds</h2></div>
+      <% if (!history.length) { %>
+      <p class="hint">No builds recorded yet.</p>
+      <% } else { %>
+      <table>
+        <thead><tr><th>When (UTC)</th><th class="num">Files</th><th></th></tr></thead>
+        <tbody>
+          <% history.forEach(function (b) { %>
+          <tr>
+            <td><%= b.finished_at %></td>
+            <td class="num"><%= b.pages_written %></td>
+            <td><% if (b.ok) { %><span class="tag tag--ok">ok</span><% } else { %><span class="tag tag--bad">failed</span><% } %></td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      <% } %>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head"><h2>Previewing</h2></div>
+      <p class="hint">The <strong>Preview site</strong> link above serves <code>web/</code> through this admin. To check it standalone, exactly as DigitalOcean will serve it, run <code>npm run serve</code> and open <a href="http://localhost:4300/" target="_blank" rel="noopener">localhost:4300</a>.</p>
+      <p class="hint">Avoid port 5000 on macOS — Control Center's AirPlay Receiver holds it and returns 403, which looks like a broken site.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head"><h2>What gets deployed</h2></div>
+      <p class="hint">DigitalOcean serves <code>web/</code> exactly as committed — there is no build step in the cloud, so what you generate here is what goes live.</p>
+      <p class="hint"><code>data/originals/</code> holds the untouched image archive. It is committed as a backup but sits outside <code>web/</code>, so it is never served to visitors.</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+<div class="wrap">
+  <div class="page-head">
+    <h1>Search</h1>
+    <p>Search by model, part number or SKU — for example <em>SM-G970F</em>, <em>iPhone 13 Pro Max</em> or <em>back cover</em>.</p>
+  </div>
+
+  <form action="/search/" method="get" role="search" style="margin-bottom:1.5rem;display:flex;gap:.5rem;flex-wrap:wrap">
+    <label class="visually-hidden" for="page-q">Search products</label>
+    <input id="page-q" type="search" name="q" data-search-page-input placeholder="Search all <%= totalProducts %> products…"
+           style="flex:1 1 260px;padding:.7rem 1rem;border:1px solid var(--border-strong);border-radius:var(--radius-pill)">
+    <button class="btn" type="submit">Search</button>
+  </form>
+
+  <p data-search-summary class="section__intro"></p>
+  <ul class="grid" role="list" data-search-results></ul>
+
+  <template id="search-card-template">
+    <li class="grid__item">
+      <article class="card">
+        <div class="card__media"><a href="" tabindex="-1" aria-hidden="true"><img src="" alt="" width="500" height="500" loading="lazy" decoding="async"></a></div>
+        <div class="card__body">
+          <h2 class="card__title"><a href="" data-title></a></h2>
+          <p class="card__meta" data-meta></p>
+          <p class="card__price" data-price></p>
+        </div>
+      </article>
+    </li>
+  </template>
+
+  <section class="section" aria-labelledby="browse-heading">
+    <h2 id="browse-heading" style="font-size:1.1rem">Or browse by category</h2>
+    <ul class="cat-tiles" role="list">
+      <% categories.forEach(function (c) { %>
+      <li><a class="cat-tile" href="<%= c.url %>"><%= c.name %><span><%= c.countLabel %></span></a></li>
+      <% }); %>
+    </ul>
+  </section>
+</div>

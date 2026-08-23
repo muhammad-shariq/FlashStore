@@ -1,0 +1,33 @@
+node_modules/
+.DS_Store
+*.log
+npm-debug.log*
+
+# SQLite working files (the .db itself IS committed as the source of truth)
+data/store.db-wal
+data/store.db-shm
+data/store.db-journal
+
+# transient
+.tmp/
+backend/uploads/tmp/
+
+# Environment variables and secrets
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+secret*
+
+
+# AI Assistants and IDEs
+.cursor/
+.cursorrules
+.gemini/
+.cline/
+.windsurf/
+.windsurfrules
+.aider*
+.vscode/
+.idea/

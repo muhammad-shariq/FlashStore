@@ -1,0 +1,81 @@
+<%- include('partials/breadcrumbs', { trail }) %>
+
+<div class="wrap">
+  <div class="page-head">
+    <h1><%= heading %></h1>
+    <p><%= subheading %></p>
+  </div>
+
+  <% if (category && category.description && currentPage === 1) { %>
+  <div class="section--tight">
+    <p class="section__intro"><%= category.description %></p>
+  </div>
+  <% } %>
+
+  <% if (facets.brands.length > 1 || facets.conditions.length > 1) { %>
+  <div class="toolbar" data-filters>
+    <span class="toolbar__count">
+      <span data-filter-count><%= products.length %> <%= products.length === 1 ? 'product' : 'products' %></span><%
+      if (totalPages > 1) { %> — filters apply to this page<% } %>
+    </span>
+
+    <% if (facets.brands.length > 1) { %>
+    <div class="filter-group">
+      <span>Brand</span>
+      <% facets.brands.forEach(function (b) { %>
+      <button class="chip" type="button" data-facet="brand" data-value="<%= b.slug %>" aria-pressed="false"><%= b.name %> (<%= b.count %>)</button>
+      <% }); %>
+    </div>
+    <% } %>
+
+    <% if (facets.conditions.length > 1) { %>
+    <div class="filter-group">
+      <span>Condition</span>
+      <% facets.conditions.forEach(function (c) { %>
+      <button class="chip" type="button" data-facet="condition" data-value="<%= c.slug %>" aria-pressed="false"><%= c.name %> (<%= c.count %>)</button>
+      <% }); %>
+    </div>
+    <% } %>
+
+    <button class="chip" type="button" data-filter-clear>Clear</button>
+
+    <label class="visually-hidden" for="sort">Sort by</label>
+    <select class="sort" id="sort" data-sort>
+      <option value="featured">Sort: Featured</option>
+      <option value="price-asc">Price: low to high</option>
+      <option value="price-desc">Price: high to low</option>
+      <option value="title">Name: A–Z</option>
+    </select>
+  </div>
+  <% } %>
+
+  <ul class="grid" role="list" data-product-grid>
+    <% products.forEach(function (p, i) { %><%- include('partials/card', { product: p, eager: i < 4, hLevel: 2 }) %><% }); %>
+  </ul>
+
+  <p class="empty-state" data-filter-empty hidden>No products match those filters. <button class="chip" type="button" data-filter-clear>Clear filters</button></p>
+
+  <%- include('partials/pagination', { totalPages, currentPage, pageNumbers, pageUrl }) %>
+</div>
+
+<% if (category && category.faq && category.faq.length && currentPage === 1) { %>
+<section class="section wrap" aria-labelledby="faq-heading">
+  <h2 id="faq-heading">Frequently asked questions</h2>
+  <div class="accordion">
+    <% category.faq.forEach(function (f) { %>
+    <details><summary><%= f.q %></summary><div class="accordion__body prose"><p><%= f.a %></p></div></details>
+    <% }); %>
+  </div>
+</section>
+<% } %>
+
+<% if (siblings.length && currentPage === 1) { %>
+<section class="section--tight wrap">
+  <h2 style="font-size:1rem">Browse other categories</h2>
+  <ul class="cat-tiles" role="list">
+    <% siblings.forEach(function (c) { %>
+    <li><a class="cat-tile" href="<%= c.url %>"><%= c.name %><span><%= c.countLabel %></span></a></li>
+    <% }); %>
+  </ul>
+</section>
+<% } %>

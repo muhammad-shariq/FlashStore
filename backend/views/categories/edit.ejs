@@ -1,0 +1,149 @@
+<div class="head">
+  <h1><%= category.id ? 'Edit' : 'New' %> <%= category.kind === 'brand' ? 'brand' : 'category' %></h1>
+  <div class="head__actions">
+    <% if (category.id) { %>
+    <a class="btn" href="/site<%= category.kind === 'brand' ? '/brands/' : '/collections/' %><%= category.slug %>/" target="_blank" rel="noopener">View on site ↗</a>
+    <% } %>
+    <a class="btn" href="/categories">Back to list</a>
+  </div>
+</div>
+
+<form method="post" action="<%= category.id ? '/categories/' + category.id : '/categories/new' %>">
+<div class="cols">
+  <div>
+    <div class="panel">
+      <div class="panel__head"><h2>Details</h2></div>
+      <div class="row">
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" value="<%= category.name %>" required>
+        </div>
+        <div class="field">
+          <label for="slug">Slug</label>
+          <input id="slug" name="slug" type="text" value="<%= category.slug %>">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="kind">Type</label>
+          <select id="kind" name="kind">
+            <option value="category"<%= category.kind === 'category' ? ' selected' : '' %>>Category</option>
+            <option value="brand"<%= category.kind === 'brand' ? ' selected' : '' %>>Brand</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="position">Sort order</label>
+          <input id="position" name="position" type="number" value="<%= category.position %>">
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <label class="check" style="font-weight:400">
+            <input type="checkbox" name="featured" value="1"<%= category.featured ? ' checked' : '' %>>
+            <span>Feature a product row on the homepage</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="description">Intro copy</label>
+        <textarea id="description" name="description" rows="6"><%= category.description %></textarea>
+        <p class="hint">Shown above the product grid. Aim for 80–150 words of genuinely useful detail — a bare grid of products gives search engines and AI assistants nothing to work with, and this is the text most likely to be quoted when someone asks about this kind of part.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head"><h2>Search appearance</h2></div>
+      <div class="field">
+        <label for="seo_title">Page title <span class="counter" data-counter-for="seo_title"></span></label>
+        <input id="seo_title" name="seo_title" type="text" value="<%= category.seo_title %>" data-counter="70">
+      </div>
+      <div class="field">
+        <label for="seo_description">Meta description <span class="counter" data-counter-for="seo_description"></span></label>
+        <textarea id="seo_description" name="seo_description" rows="3" data-counter="160"><%= category.seo_description %></textarea>
+      </div>
+      <div class="serp" data-serp>
+        <div class="serp__url"><%= (settings.siteUrl || '') %><%= category.kind === 'brand' ? '/brands/' : '/collections/' %><%= category.slug %>/</div>
+        <div class="serp__title" data-serp-title></div>
+        <div class="serp__desc" data-serp-desc></div>
+      </div>
+    </div>
+
+    <div class="panel" data-repeater>
+      <div class="panel__head">
+        <h2>Category FAQ</h2>
+        <button class="btn btn--sm" type="button" data-repeater-add>Add question</button>
+      </div>
+      <p class="hint">Published as <code>FAQPage</code> structured data on this category page. Leave empty to use a default set chosen for this category.</p>
+      <div data-repeater-list>
+        <% faq.forEach(function (f) { %>
+        <div data-repeater-row style="border-bottom:1px solid var(--line);padding-bottom:.6rem;margin-bottom:.6rem">
+          <div class="field"><label>Question</label><input type="text" name="faq_q" value="<%= f.q %>"></div>
+          <div class="field"><label>Answer</label><textarea name="faq_a" rows="2"><%= f.a %></textarea></div>
+          <button class="btn btn--sm" type="button" data-repeater-remove>Remove</button>
+        </div>
+        <% }); %>
+      </div>
+      <template>
+        <div data-repeater-row style="border-bottom:1px solid var(--line);padding-bottom:.6rem;margin-bottom:.6rem">
+          <div class="field"><label>Question</label><input type="text" name="faq_q" value=""></div>
+          <div class="field"><label>Answer</label><textarea name="faq_a" rows="2"></textarea></div>
+          <button class="btn btn--sm" type="button" data-repeater-remove>Remove</button>
+        </div>
+      </template>
+    </div>
+  </div>
+
+  <div>
+    <div class="panel">
+      <button class="btn btn--primary" type="submit" style="width:100%">Save</button>
+      <p class="hint" style="margin-top:.6rem">Then <a href="/publish">publish</a> to update the site.</p>
+    </div>
+  </div>
+</div>
+</form>
+
+<% if (category.id) { %>
+<div class="panel" id="products">
+  <div class="panel__head">
+    <h2>Products in this <%= category.kind %> <span class="hint" style="margin:0">— <%= assigned.size %> assigned</span></h2>
+    <button class="btn btn--sm" type="button" data-toggle-all="#assign-list">Toggle all</button>
+  </div>
+  <form method="post" action="/categories/<%= category.id %>">
+    <input type="hidden" name="manage_products" value="1">
+    <input type="hidden" name="name" value="<%= category.name %>">
+    <input type="hidden" name="slug" value="<%= category.slug %>">
+    <input type="hidden" name="kind" value="<%= category.kind %>">
+    <input type="hidden" name="description" value="<%= category.description %>">
+    <input type="hidden" name="seo_title" value="<%= category.seo_title %>">
+    <input type="hidden" name="seo_description" value="<%= category.seo_description %>">
+    <input type="hidden" name="position" value="<%= category.position %>">
+    <% if (category.featured) { %><input type="hidden" name="featured" value="1"><% } %>
+    <% faq.forEach(function (f) { %>
+    <input type="hidden" name="faq_q" value="<%= f.q %>"><input type="hidden" name="faq_a" value="<%= f.a %>">
+    <% }); %>
+
+    <div id="assign-list" style="max-height:420px;overflow-y:auto;border:1px solid var(--line);border-radius:6px;padding:.6rem">
+      <% products.forEach(function (p) { %>
+      <label class="check" style="font-weight:400">
+        <input type="checkbox" name="products" value="<%= p.id %>"<%= assigned.has(p.id) ? ' checked' : '' %>>
+        <span><%= p.title %> <span class="hint" style="margin:0">— <%= p.part_type || 'no part type' %></span></span>
+      </label>
+      <% }); %>
+    </div>
+    <button class="btn btn--primary" type="submit" style="margin-top:.9rem">Save assignments</button>
+  </form>
+</div>
+
+<div class="panel">
+  <div class="panel__head"><h2 style="color:var(--bad)">Delete</h2></div>
+  <form method="post" action="/categories/<%= category.id %>/delete" data-confirm="Delete this category? Products are not deleted, only unassigned.">
+    <% if (assigned.size) { %>
+    <label class="check" style="font-weight:400;margin-bottom:.6rem">
+      <input type="checkbox" name="force" value="1">
+      <span>Yes, delete it even though <%= assigned.size %> product<%= assigned.size === 1 ? ' is' : 's are' %> still assigned</span>
+    </label>
+    <% } %>
+    <button class="btn btn--danger" type="submit">Delete category</button>
+  </form>
+</div>
+<% } %>

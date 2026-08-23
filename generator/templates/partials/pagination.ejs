@@ -1,0 +1,11 @@
+<% if (totalPages > 1) { %>
+<nav class="pagination" aria-label="Pagination">
+  <% if (currentPage > 1) { %><a href="<%= pageUrl(currentPage - 1) %>" rel="prev">← Previous</a><% } %>
+  <% pageNumbers.forEach(function (n) { %>
+    <% if (n === '…') { %><span class="ellipsis">…</span>
+    <% } else if (n === currentPage) { %><span aria-current="page"><%= n %></span>
+    <% } else { %><a href="<%= pageUrl(n) %>" aria-label="Page <%= n %>"><%= n %></a><% } %>
+  <% }); %>
+  <% if (currentPage < totalPages) { %><a href="<%= pageUrl(currentPage + 1) %>" rel="next">Next →</a><% } %>
+</nav>
+<% } %>

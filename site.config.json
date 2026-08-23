@@ -1,0 +1,54 @@
+{
+  "storeName": "FlashStore",
+  "tagline": "Genuine mobile phone parts, screens & accessories",
+  "shortDescription": "UK supplier of genuine and refurbished mobile phone parts — LCD screens, back covers, batteries, charging ports, cases and accessories for Apple iPhone, Samsung Galaxy, Huawei and more.",
+  "siteUrl": "https://www.FlashStore.com",
+  "locale": "en-GB",
+  "currency": "GBP",
+  "currencySymbol": "£",
+  "contact": {
+    "whatsapp": "44XXXXXXXXXX",
+    "phoneDisplay": "+44 XXXX XXXXXX",
+    "orderEmail": "orders@example.com",
+    "supportEmail": "info@example.com",
+    "addressLine1": "PLACEHOLDER - Street address",
+    "addressLine2": "",
+    "city": "PLACEHOLDER - City",
+    "postcode": "XX0 0XX",
+    "country": "United Kingdom",
+    "countryCode": "GB",
+    "openingHours": "Mon-Fri 09:00-17:30"
+  },
+  "social": {
+    "facebook": "",
+    "instagram": "",
+    "twitter": "",
+    "youtube": "",
+    "tiktok": "",
+    "ebay": ""
+  },
+  "seo": {
+    "titleSuffix": "FlashStore Plus",
+    "defaultDescription": "Genuine and refurbished mobile phone parts, LCD screens, back covers, batteries and accessories for iPhone, Samsung Galaxy and more. UK dispatch.",
+    "twitterHandle": ""
+  },
+  "theme": {
+    "colorBg": "#ffffff",
+    "colorBg2": "#f3f3f3",
+    "colorText": "#121212",
+    "colorAccent": "#FCE477",
+    "colorAccentText": "#121212",
+    "pageWidth": 1200,
+    "cardRadius": 16,
+    "buttonRadius": 4
+  },
+  "shop": {
+    "perPage": 200,
+    "poaLabel": "Enquire for price"
+  },
+  "images": {
+    "jpegFallback": false
+  },
+  "announcement": "",
+  "storeLogo": ""
+}

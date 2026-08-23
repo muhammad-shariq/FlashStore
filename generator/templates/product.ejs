@@ -1,0 +1,147 @@
+<%- include('partials/breadcrumbs', { trail }) %>
+
+<div class="wrap">
+  <div class="product">
+    <!-- gallery -->
+    <div class="gallery" data-gallery>
+      <div class="gallery__main">
+        <% var hero = product.images[0]; %>
+        <% if (hero.fallback) { %>
+        <picture>
+          <source type="image/webp" srcset="<%= hero.large %>">
+          <img data-gallery-main src="<%= hero.fallback %>" alt="<%= hero.alt %>"
+               width="<%= hero.width %>" height="<%= hero.height %>"
+               fetchpriority="high" decoding="async">
+        </picture>
+        <% } else { %>
+        <img data-gallery-main src="<%= hero.large %>" alt="<%= hero.alt %>"
+             width="<%= hero.width %>" height="<%= hero.height %>"
+             fetchpriority="high" decoding="async">
+        <% } %>
+      </div>
+      <% if (product.images.length > 1) { %>
+      <ul class="gallery__thumbs" role="list">
+        <% product.images.forEach(function (img, i) { %>
+        <li><button type="button" data-gallery-thumb data-large="<%= img.large %>" data-alt="<%= img.alt %>"
+                    aria-current="<%= i === 0 ? 'true' : 'false' %>"
+                    aria-label="Show image <%= i + 1 %> of <%= product.images.length %>">
+          <img src="<%= img.thumb %>" alt="" width="68" height="68" loading="lazy" decoding="async">
+        </button></li>
+        <% }); %>
+      </ul>
+      <% } %>
+    </div>
+
+    <!-- details -->
+    <div>
+      <h1 class="product__title"><%= product.title %></h1>
+      <p class="product__sub">
+        <% if (product.primaryBrand) { %><a href="<%= product.primaryBrand.url %>"><%= product.primaryBrand.name %></a> · <% } %>
+        <% if (product.primaryCategory) { %><a href="<%= product.primaryCategory.url %>"><%= product.primaryCategory.name %></a><% } %>
+      </p>
+
+      <% if (product.isPoa) { %>
+      <p class="product__poa"><%= settings.shop.poaLabel %></p>
+      <p class="product__vat">Send us this item and we will reply with a price and postage cost.</p>
+      <% } else { %>
+      <div class="product__price">
+        <strong data-variant-price><%= product.variants[0].priceLabel %></strong>
+        <del data-variant-compare<%= product.variants[0].compareAtLabel ? '' : ' hidden' %>><%= product.variants[0].compareAtLabel %></del>
+        <span class="save" data-variant-save<%= product.variants[0].onSale ? '' : ' hidden' %>><%
+          if (product.variants[0].onSale) { %>Save <%= Math.round((1 - product.variants[0].price / product.variants[0].compareAt) * 100) %>%<% } %></span>
+      </div>
+      <p class="product__vat">Price shown per item in <%= settings.currency %>. Postage confirmed when we reply.</p>
+      <% } %>
+
+      <!-- The one-sentence factual summary: what it is, what it fits, condition. -->
+      <p class="summary"><%= summary %></p>
+
+      <form data-add-to-cart data-handle="<%= product.handle %>" data-title="<%= product.title %>"
+            data-url="<%= product.url %>" data-image="<%= product.images[0].thumb %>">
+        <% if (product.hasOptions) { %>
+        <fieldset class="options">
+          <legend><%= product.optionNames[0] %> <span>— <%= product.variants.length %> available</span></legend>
+          <div class="pills">
+            <% product.variants.forEach(function (v, i) { %>
+            <input type="radio" name="variant" id="v-<%= v.id %>" value="<%= v.id %>"
+                   <%= i === 0 ? 'checked' : '' %>
+                   data-variant='<%- JSON.stringify({ id: v.key, title: v.title, sku: v.sku, price: v.price, priceLabel: v.priceLabel, compareAt: v.compareAt, compareAtLabel: v.compareAtLabel, imageIndex: v.imageIndex, image: product.images[v.imageIndex] ? product.images[v.imageIndex].thumb : product.images[0].thumb }) %>'>
+            <label for="v-<%= v.id %>"><%= v.title %><% if (!product.isPoa && v.price !== product.minPrice) { %> <small><%= v.priceLabel %></small><% } %></label>
+            <% }); %>
+          </div>
+        </fieldset>
+        <% } else { %>
+        <input type="radio" name="variant" value="<%= product.variants[0].id %>" checked hidden
+               data-variant='<%- JSON.stringify({ id: product.variants[0].key, title: "", sku: product.variants[0].sku, price: product.variants[0].price, priceLabel: product.variants[0].priceLabel, compareAt: product.variants[0].compareAt, compareAtLabel: product.variants[0].compareAtLabel, imageIndex: 0, image: product.images[0].thumb }) %>'>
+        <% } %>
+
+        <div class="buy">
+          <div class="buy__row">
+            <div class="qty">
+              <button type="button" data-qty-step="-1" aria-label="Decrease quantity">−</button>
+              <label class="visually-hidden" for="quantity">Quantity</label>
+              <input id="quantity" name="quantity" type="number" value="1" min="1" max="999" inputmode="numeric">
+              <button type="button" data-qty-step="1" aria-label="Increase quantity">+</button>
+            </div>
+            <button class="btn" type="submit"><%= product.isPoa ? 'Add to enquiry' : 'Add to order' %></button>
+          </div>
+          <a class="btn btn--outline btn--wide" href="/cart/">Review &amp; send order</a>
+        </div>
+      </form>
+
+      <!-- Compatibility and specification table. Tables like this are parsed
+           far more reliably by search and AI systems than prose. -->
+      <table class="specs">
+        <caption>Specification &amp; compatibility</caption>
+        <tbody>
+          <% if (product.fitsModels.length) { %>
+          <tr>
+            <th scope="row">Compatible with</th>
+            <td><div class="model-list"><% product.fitsModels.forEach(function (m) { %><span class="model-chip"><%= m %></span><% }); %></div></td>
+          </tr>
+          <% } %>
+          <% if (product.partType) { %><tr><th scope="row">Part type</th><td><%= product.partType %></td></tr><% } %>
+          <% if (product.conditionGrade) { %><tr><th scope="row">Condition</th><td><%= product.conditionGrade %></td></tr><% } %>
+          <% if (product.primaryBrand) { %><tr><th scope="row">Brand</th><td><%= product.primaryBrand.name %></td></tr><% } %>
+          <% if (product.hasOptions) { %><tr><th scope="row"><%= product.optionNames[0] %> options</th><td><%= product.variants.map(function (v) { return v.title; }).join(', ') %></td></tr><% } %>
+          <tr<%= product.variants[0].sku ? '' : ' hidden' %>><th scope="row">SKU</th><td data-variant-sku><%= product.variants[0].sku || '—' %></td></tr>
+          <tr><th scope="row">Availability</th><td>In stock — dispatched from the UK</td></tr>
+        </tbody>
+      </table>
+
+      <% if (product.bodyHtml) { %>
+      <!-- The description body and FAQ contain their own h3/h4 headings, so a
+           section heading is needed here to keep the document outline valid. -->
+      <h2 class="visually-hidden">Product information</h2>
+      <div class="accordion">
+        <details open>
+          <summary>Description</summary>
+          <div class="accordion__body prose"><%- product.bodyHtml %></div>
+        </details>
+        <% if (faq.length) { %>
+        <details>
+          <summary>Frequently asked questions</summary>
+          <div class="accordion__body prose">
+            <% faq.forEach(function (f) { %>
+            <h3><%= f.q %></h3>
+            <p><%= f.a %></p>
+            <% }); %>
+          </div>
+        </details>
+        <% } %>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<% if (related.length) { %>
+<section class="section wrap" aria-labelledby="related-heading">
+  <div class="section__head"><h2 id="related-heading">More in <%= product.primaryCategory ? product.primaryCategory.name : 'the shop' %></h2>
+    <% if (product.primaryCategory) { %><a href="<%= product.primaryCategory.url %>">View all →</a><% } %>
+  </div>
+  <ul class="grid" role="list">
+    <% related.forEach(function (p) { %><%- include('partials/card', { product: p, eager: false, hLevel: 3 }) %><% }); %>
+  </ul>
+</section>
+<% } %>

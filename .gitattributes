@@ -1,0 +1,12 @@
+# Generated site output — collapse it in diffs so reviews stay readable.
+web/**            linguist-generated=true -diff
+data/store.db     binary
+data/originals/** binary -diff
+
+# Keep line endings stable across machines.
+*.js   text eol=lf
+*.json text eol=lf
+*.css  text eol=lf
+*.ejs  text eol=lf
+*.md   text eol=lf
+*.yaml text eol=lf

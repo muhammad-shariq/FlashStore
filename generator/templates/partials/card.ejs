@@ -1,0 +1,35 @@
+<li class="grid__item" data-product-item
+    data-brand="<%= product.brands.map(function (b) { return b.slug; }).join('|') %>"
+    data-category="<%= product.categories.map(function (c) { return c.slug; }).join('|') %>"
+    data-condition="<%= product.conditionGrade ? product.conditionGrade.split(' · ')[0].toLowerCase().replace(/\s+/g, '-') : '' %>"
+    data-price="<%= product.minPrice %>"
+    data-title="<%= product.title %>">
+  <article class="card">
+    <div class="card__media">
+      <% if (product.onSale) { %><span class="badge badge--sale">Sale</span><% } %>
+      <% if (product.conditionGrade) { %><span class="badge badge--cond"><%= product.conditionGrade.split(' · ')[0] %></span><% } %>
+      <a href="<%= product.url %>" tabindex="-1" aria-hidden="true">
+        <img src="<%= product.images[0].thumb %>" alt=""
+             width="<%= product.images[0].width %>" height="<%= product.images[0].height %>"
+             loading="<%= eager ? 'eager' : 'lazy' %>" decoding="async"
+             <%= eager ? 'fetchpriority="high"' : '' %>>
+        <% if (product.images.length > 1) { %>
+        <img class="card__img--alt" src="<%= product.images[1].thumb %>" alt=""
+             width="<%= product.images[1].width %>" height="<%= product.images[1].height %>"
+             loading="lazy" decoding="async">
+        <% } %>
+      </a>
+    </div>
+    <div class="card__body">
+      <h<%= hLevel %> class="card__title"><a href="<%= product.url %>"><%= product.title %></a></h<%= hLevel %>>
+      <% if (product.fitsModels.length) { %>
+      <p class="card__meta">Fits <%= product.fitsModels.slice(0, 2).join(', ') %><%= product.fitsModels.length > 2 ? ' +' + (product.fitsModels.length - 2) + ' more' : '' %></p>
+      <% } else if (product.partType) { %>
+      <p class="card__meta"><%= product.partType %></p>
+      <% } %>
+      <p class="card__price<%= product.isPoa ? ' card__price--poa' : '' %>">
+        <%= product.priceLabel %><% if (product.onSale) { %><del><%= product.variants.find(function (v) { return v.onSale; }).compareAtLabel %></del><% } %>
+      </p>
+    </div>
+  </article>
+</li>

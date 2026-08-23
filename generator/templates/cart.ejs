@@ -1,0 +1,43 @@
+<div class="wrap">
+  <div class="page-head">
+    <h1>Your order</h1>
+    <p>Review your list, then send it to us in one message. We reply with availability, postage and the total — nothing is charged on this site.</p>
+  </div>
+
+  <p class="empty-state" data-cart-empty>
+    Your order is empty.<br><br>
+    <a class="btn" href="/products/">Browse products</a>
+  </p>
+
+  <div class="cart-layout" data-cart-filled hidden>
+    <div>
+      <ul class="cart-lines" data-cart-lines></ul>
+      <p style="margin-top:1rem"><button class="cart-line__remove" type="button" data-cart-clear>Clear the whole order</button></p>
+    </div>
+
+    <aside class="cart-aside">
+      <div class="cart-totals">
+        <div class="cart-totals__row"><span data-cart-itemcount></span></div>
+        <div class="cart-totals__row cart-totals__row--total"><span>Subtotal</span><span data-cart-subtotal>£0.00</span></div>
+      </div>
+      <p class="cart-note" data-cart-poa-note hidden>Some items are priced on request and are not included in the subtotal.</p>
+      <p class="cart-note">Postage is not included. We confirm the full total before you pay.</p>
+
+      <div class="buy" style="margin-top:1rem">
+        <% if (contact.whatsapp) { %>
+        <a class="btn btn--whatsapp btn--wide" data-whatsapp-order href="#" rel="noopener" target="_blank">Send order on WhatsApp</a>
+        <% } else { %>
+        <p class="notice">The shop's WhatsApp number has not been set yet. Use email below, or add the number in the admin Settings page.</p>
+        <% } %>
+        <a class="btn btn--outline btn--wide" data-email-order href="#">Send order by email</a>
+        <button class="btn btn--outline btn--wide" type="button" data-copy-order>Copy order details</button>
+      </div>
+
+      <details style="margin-top:1rem">
+        <summary style="cursor:pointer;font-size:.875rem">Preview the message we'll receive</summary>
+        <label class="visually-hidden" for="order-preview">Order message</label>
+        <textarea class="order-preview" id="order-preview" data-order-preview readonly rows="10"></textarea>
+      </details>
+    </aside>
+  </div>
+</div>

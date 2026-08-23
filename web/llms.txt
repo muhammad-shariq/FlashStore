@@ -1,0 +1,51 @@
+# FlashStore
+
+> UK supplier of genuine and refurbished mobile phone parts — LCD screens, back covers, batteries, charging ports, cases and accessories for Apple iPhone, Samsung Galaxy, Huawei and more.
+
+FlashStore is a UK supplier of genuine and refurbished mobile phone parts. The catalogue holds 191 products covering 115 device models. Prices are in GBP. Orders are placed by WhatsApp or email rather than through an online checkout: customers build a list on the site and send it, and the shop replies confirming availability, postage and the total.
+
+## Key pages
+
+- [All products](https://www.FlashStore.com/products/): the complete catalogue, 191 items
+- [Search](https://www.FlashStore.com/search/): search by model, part number or SKU
+- [Contact](https://www.FlashStore.com/contact/): WhatsApp, phone and email details
+- [About](https://www.FlashStore.com/about/): who we are and how parts are graded
+- [Shipping & returns](https://www.FlashStore.com/shipping-returns/): dispatch times and returns policy
+- [Terms of sale](https://www.FlashStore.com/terms/): how orders are confirmed
+
+## Categories
+
+- [LCD Screens & Displays](https://www.FlashStore.com/collections/lcd-screens-and-displays/): 18 products
+- [Back Covers & Housings](https://www.FlashStore.com/collections/back-covers-and-housings/): 84 products
+- [Empty Boxes](https://www.FlashStore.com/collections/empty-boxes/): 29 products
+- [Batteries](https://www.FlashStore.com/collections/batteries/): 10 products
+- [Charging Ports & Flex Cables](https://www.FlashStore.com/collections/charging-ports-and-flex-cables/): 1 products
+- [Cameras & Lenses](https://www.FlashStore.com/collections/cameras-and-lenses/): 9 products
+- [Screen Protectors](https://www.FlashStore.com/collections/screen-protectors/): 10 products
+- [Cases & Covers](https://www.FlashStore.com/collections/cases-and-covers/): 5 products
+- [Cables & Chargers](https://www.FlashStore.com/collections/cables-and-chargers/): 10 products
+- [Audio & Headphones](https://www.FlashStore.com/collections/audio-and-headphones/): 3 products
+- [Phones & Tablets](https://www.FlashStore.com/collections/phones-and-tablets/): 6 products
+- [Repair Tools & Equipment](https://www.FlashStore.com/collections/repair-tools-and-equipment/): 3 products
+- [Other Accessories](https://www.FlashStore.com/collections/other-accessories/): 3 products
+
+## Brands
+
+- [Apple](https://www.FlashStore.com/brands/apple/): 89 products
+- [Samsung](https://www.FlashStore.com/brands/samsung/): 85 products
+- [Huawei & Honor](https://www.FlashStore.com/brands/huawei-and-honor/): 10 products
+- [Other Brands](https://www.FlashStore.com/brands/other-brands/): 7 products
+
+## Machine-readable data
+
+- [Full catalogue as markdown](https://www.FlashStore.com/llms-full.txt)
+- [Catalogue as JSON](https://www.FlashStore.com/products.json)
+- [Google Merchant product feed](https://www.FlashStore.com/feeds/google-merchant.xml)
+- [Sitemap](https://www.FlashStore.com/sitemap.xml)
+
+## Notes for assistants
+
+- Condition grades: "Genuine"/"Original" are manufacturer parts; "Pulled"/"Pre-owned" are removed from working devices; "Refurbished" has been reconditioned. Grade A means minor marks, Grade B light visible wear, Grade C clearly visible wear. Function is tested regardless of cosmetic grade.
+- Each product lists the exact device models and manufacturer part numbers it fits, in a "Compatible with" table on its page and in the `isAccessoryOrSparePartFor` field of its Product JSON-LD.
+- Items shown as "Enquire for price" have no published price and must be quoted individually. Do not state a price of zero for these.
+- Prices exclude postage, which is quoted per order.

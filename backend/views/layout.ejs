@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><%= title %> —FlashStore admin</title>
+<link rel="stylesheet" href="/admin-assets/admin.css">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="side__brand">FlashStore Plus<span>Catalogue admin</span></div>
+    <nav>
+      <a href="/"<%= currentPath === '/' ? ' aria-current="page"' : '' %>>Dashboard</a>
+      <a href="/products"<%= currentPath.startsWith('/products') ? ' aria-current="page"' : '' %>>Products</a>
+      <a href="/categories"<%= currentPath.startsWith('/categories') ? ' aria-current="page"' : '' %>>Categories &amp; brands</a>
+      <a href="/settings"<%= currentPath.startsWith('/settings') ? ' aria-current="page"' : '' %>>Settings</a>
+      <a href="/publish"<%= currentPath.startsWith('/publish') ? ' aria-current="page"' : '' %>>Publish</a>
+    </nav>
+    <div class="side__foot">
+      Local only — 127.0.0.1<br>
+      Data: data/store.db
+    </div>
+  </aside>
+
+  <main class="main">
+    <% if (flash) { %><div class="flash flash--<%= flash.type %>"><%= flash.message %></div><% } %>
+    <%- body %>
+  </main>
+</div>
+<script src="/admin-assets/admin.js" defer></script>
+</body>
+</html>

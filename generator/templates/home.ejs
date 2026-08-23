@@ -1,0 +1,63 @@
+<section class="hero">
+  <div class="wrap hero__inner">
+    <h1><%= settings.tagline %></h1>
+    <p><%= settings.shortDescription %></p>
+    <div class="hero__cta">
+      <a class="btn" href="/products/">Browse all <%= stats.products %> products</a>
+      <a class="btn btn--outline" href="/contact/">Ask about a part</a>
+    </div>
+    <div class="hero__stats">
+      <div class="hero__stat"><strong><%= stats.products %></strong><span>Parts in stock</span></div>
+      <div class="hero__stat"><strong><%= stats.models %></strong><span>Device models covered</span></div>
+      <div class="hero__stat"><strong>UK</strong><span>Same-day dispatch</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" aria-labelledby="cats-heading">
+  <div class="section__head"><h2 id="cats-heading">Shop by category</h2><a href="/products/">All products →</a></div>
+  <ul class="cat-tiles" role="list">
+    <% categories.forEach(function (c) { %>
+    <li><a class="cat-tile" href="<%= c.url %>"><%= c.name %><span><%= c.countLabel %></span></a></li>
+    <% }); %>
+  </ul>
+</section>
+
+<section class="section--tight wrap" aria-labelledby="brands-heading">
+  <div class="section__head"><h2 id="brands-heading">Shop by brand</h2></div>
+  <ul class="cat-tiles" role="list">
+    <% brands.forEach(function (b) { %>
+    <li><a class="cat-tile" href="<%= b.url %>"><%= b.name %><span><%= b.countLabel %></span></a></li>
+    <% }); %>
+  </ul>
+</section>
+
+<% featured.forEach(function (block) { %>
+<section class="section wrap" aria-labelledby="feat-<%= block.category.slug %>">
+  <div class="section__head">
+    <h2 id="feat-<%= block.category.slug %>"><%= block.category.name %></h2>
+    <a href="<%= block.category.url %>">View all <%= block.category.product_count %> →</a>
+  </div>
+  <ul class="grid" role="list">
+    <% block.products.forEach(function (p, i) { %><%- include('partials/card', { product: p, eager: false, hLevel: 3 }) %><% }); %>
+  </ul>
+</section>
+<% }); %>
+
+<section class="section wrap">
+  <div class="contact-grid">
+    <div class="contact-card">
+      <h2>Can't find the part?</h2>
+      <p>Stock changes daily and not everything makes it onto the site. Send us the model number and we will tell you what we have.</p>
+      <a class="btn btn--sm" href="/contact/">Get in touch</a>
+    </div>
+    <div class="contact-card">
+      <h2>How ordering works</h2>
+      <p>Add the parts you need to your order, then send the list to us in one WhatsApp message or email. We confirm availability, postage and the total before any payment.</p>
+    </div>
+    <div class="contact-card">
+      <h2>Trade &amp; repair shops</h2>
+      <p>We supply repair businesses across the UK with screens, housings and protectors in volume. Ask about trade pricing on bulk orders.</p>
+    </div>
+  </div>
+</section>

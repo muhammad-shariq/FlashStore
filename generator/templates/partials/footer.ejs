@@ -1,0 +1,72 @@
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__cols">
+      <div class="footer__brand">
+        <h2>About</h2>
+        <p><strong><%= settings.storeName %></strong> — <%= settings.tagline %>.</p>
+        <p><%= settings.shortDescription %></p>
+        <% if (nav.socialLinks.length) { %>
+        <div class="social">
+          <% nav.socialLinks.forEach(function (s) { %>
+          <a href="<%= s.url %>" rel="noopener nofollow" target="_blank" aria-label="<%= s.name %>"><%- s.icon %></a>
+          <% }); %>
+        </div>
+        <% } %>
+      </div>
+
+      <div>
+        <h2>Shop</h2>
+        <ul>
+          <li><a href="/products/">All products</a></li>
+          <% nav.categories.slice(0, 7).forEach(function (c) { %>
+          <li><a href="<%= c.url %>"><%= c.name %></a></li>
+          <% }); %>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Brands</h2>
+        <ul>
+          <% nav.brands.forEach(function (b) { %>
+          <li><a href="<%= b.url %>"><%= b.name %> (<%= b.product_count %>)</a></li>
+          <% }); %>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Help</h2>
+        <ul>
+          <% nav.pages.forEach(function (p) { %>
+          <li><a href="<%= p.url %>"><%= p.name %></a></li>
+          <% }); %>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Contact</h2>
+        <ul>
+          <% if (nav.contact.whatsapp) { %>
+          <li><a href="<%= nav.whatsappLink %>" rel="noopener" target="_blank">WhatsApp<%= nav.contact.phone ? ' ' + settings.contact.phoneDisplay : '' %></a></li>
+          <% } %>
+          <% if (nav.contact.phone) { %>
+          <li><a href="<%= nav.telLink %>"><%= settings.contact.phoneDisplay %></a></li>
+          <% } %>
+          <% if (nav.contact.email) { %>
+          <li><a href="mailto:<%= settings.contact.supportEmail %>"><%= settings.contact.supportEmail %></a></li>
+          <% } %>
+          <% if (nav.contact.address) { %>
+          <li><%= settings.contact.city %>, <%= settings.contact.country %></li>
+          <% } %>
+          <% if (settings.contact.openingHours) { %>
+          <li><%= settings.contact.openingHours %></li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© <%= year %> <%= settings.storeName %>. All rights reserved.</span>
+      <span>Prices in <%= settings.currency %>. Orders are confirmed by WhatsApp or email before payment.</span>
+    </div>
+  </div>
+</footer>

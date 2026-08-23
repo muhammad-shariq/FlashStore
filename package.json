@@ -1,0 +1,29 @@
+{
+  "name": "FlashStore",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FlashStore Plus — static storefront + localhost admin backend",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "import": "node scripts/import-shopify.js",
+    "images": "node scripts/download-images.js",
+    "categorize": "node scripts/categorize.js",
+    "build": "node generator/build.js",
+    "admin": "node backend/server.js",
+    "setup": "npm run import && npm run categorize && npm run images && npm run build",
+    "serve": "node scripts/serve-web.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.5.0",
+    "csv-parse": "^5.5.6",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "multer": "^2.2.0",
+    "sanitize-html": "^2.13.1",
+    "sharp": "^0.35.3",
+    "undici": "^6.20.1"
+  }
+}

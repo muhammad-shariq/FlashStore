@@ -1,0 +1,251 @@
+<div class="head">
+  <h1><%= product.id ? 'Edit product' : 'New product' %></h1>
+  <div class="head__actions">
+    <% if (product.id) { %>
+    <a class="btn" href="/site/products/<%= product.handle %>/" target="_blank" rel="noopener">View on site ↗</a>
+    <% } %>
+    <a class="btn" href="/products">Back to list</a>
+  </div>
+</div>
+
+<form method="post" action="<%= product.id ? '/products/' + product.id : '/products/new' %>">
+<div class="cols">
+  <div>
+    <div class="panel">
+      <div class="panel__head"><h2>Basics</h2></div>
+
+      <div class="field">
+        <label for="title">Title</label>
+        <input id="title" name="title" type="text" value="<%= product.title %>" required>
+        <p class="hint">This is the page's H1 and the name used in structured data.</p>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="handle">URL handle <span class="opt">(changing this breaks existing links)</span></label>
+          <input id="handle" name="handle" type="text" value="<%= product.handle %>">
+        </div>
+        <div class="field">
+          <label for="status">Status</label>
+          <select id="status" name="status">
+            <option value="active"<%= product.status === 'active' ? ' selected' : '' %>>Live on the site</option>
+            <option value="hidden"<%= product.status === 'hidden' ? ' selected' : '' %>>Hidden</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="body_html">Description</label>
+        <textarea id="body_html" name="body_html" class="tall"><%= product.body_html %></textarea>
+        <p class="hint">Basic HTML only — <code>p</code>, <code>ul</code>, <code>li</code>, <code>strong</code>, <code>em</code>, <code>h3</code>, <code>a</code>, <code>table</code>. Anything else is stripped on save, including inline styles and font tags. Longer, specific descriptions rank better and give AI assistants something to quote.</p>
+      </div>
+    </div>
+
+    <div class="panel" id="attributes">
+      <div class="panel__head">
+        <h2>Compatibility &amp; attributes</h2>
+        <% if (product.id) { %>
+        <button class="btn btn--sm" type="submit" form="rederive">Re-derive from title</button>
+        <% } %>
+      </div>
+      <p class="hint">These drive the compatibility table, the summary sentence, the category assignment and the <code>isAccessoryOrSparePartFor</code> structured data. The compatible-models list is the single most valuable field on this page.</p>
+
+      <div class="field">
+        <label for="fits_models">Compatible models <span class="opt">— one per line, or comma separated</span></label>
+        <textarea id="fits_models" name="fits_models" rows="5"><%= models.join('\n') %></textarea>
+        <% if (models.length) { %>
+        <div class="chips" style="margin-top:.4rem">
+          <% models.forEach(function (m) { %><span class="chip"><%= m %></span><% }); %>
+        </div>
+        <% } %>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="part_type">Part type</label>
+          <input id="part_type" name="part_type" type="text" value="<%= product.part_type %>" list="part-types">
+          <datalist id="part-types">
+            <% ['LCD Screen','Back Cover','Rear Housing','Empty Box','Case','Battery','Charging Port','Flex Cable','Camera','Screen Protector','Cable','Charger','Adapter','Audio','Stylus','Phone','Repair Tool','Computer Accessory','Accessory'].forEach(function (t) { %>
+            <option value="<%= t %>"></option><% }); %>
+          </datalist>
+        </div>
+        <div class="field">
+          <label for="condition_grade">Condition</label>
+          <input id="condition_grade" name="condition_grade" type="text" value="<%= product.condition_grade %>" list="conditions">
+          <datalist id="conditions">
+            <% ['Genuine','Original','Pulled','Pre-owned','Refurbished','New','Genuine · Grade A','Grade A','Grade B','Grade B/C'].forEach(function (t) { %>
+            <option value="<%= t %>"></option><% }); %>
+          </datalist>
+          <p class="hint">Maps to <code>itemCondition</code>: Refurbished, Pre-owned/Pulled/Grade → used, New → new.</p>
+        </div>
+        <div class="field">
+          <label for="vendor">Vendor</label>
+          <input id="vendor" name="vendor" type="text" value="<%= product.vendor %>">
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="variants">
+      <div class="panel__head">
+        <h2>Price &amp; variants</h2>
+        <% if (product.id) { %><button class="btn btn--sm" type="submit" form="addvariant">Add variant</button><% } %>
+      </div>
+      <div class="field" style="max-width:280px">
+        <label for="option_name">Option name</label>
+        <input id="option_name" name="option_name" type="text"
+               value="<%= variants.length && variants[0].opt1_name ? variants[0].opt1_name : (variants.find(function (v) { return v.opt1_name; }) || {}).opt1_name || '' %>"
+               placeholder="Color, Condition, Size…">
+        <p class="hint">Leave a variant's value empty for a product with a single price and no options.</p>
+      </div>
+      <table>
+        <thead><tr><th>Option value</th><th>SKU</th><th class="num">Price (£)</th><th class="num">Was (£)</th><th></th></tr></thead>
+        <tbody>
+          <% variants.forEach(function (v) { %>
+          <tr>
+            <input type="hidden" name="variant_id" value="<%= v.id %>">
+            <td><input type="text" name="variant_value" value="<%= v.opt1_value %>" placeholder="(no option)"></td>
+            <td><input type="text" name="variant_sku" value="<%= v.sku %>"></td>
+            <td><input type="number" name="variant_price" step="0.01" min="0" value="<%= v.price %>"></td>
+            <td><input type="number" name="variant_compare" step="0.01" min="0" value="<%= v.compare_at_price %>"></td>
+            <td class="num">
+              <% if (variants.length > 1) { %>
+              <button class="btn btn--sm btn--danger" type="submit" formaction="/products/<%= product.id %>/variants/<%= v.id %>/delete" formmethod="post">×</button>
+              <% } %>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      <p class="hint">A price of 0 shows “<%= settings['shop.poaLabel'] || 'Enquire for price' %>” on the site and publishes no Offer in structured data, so the page never claims a £0.00 price. “Was” only shows as a sale when it is higher than the price.</p>
+    </div>
+
+    <div class="panel" id="seo">
+      <div class="panel__head"><h2>Search appearance</h2></div>
+      <div class="field">
+        <label for="seo_title">Page title <span class="counter" data-counter-for="seo_title"></span></label>
+        <input id="seo_title" name="seo_title" type="text" value="<%= product.seo_title %>" data-counter="70">
+      </div>
+      <div class="field">
+        <label for="seo_description">Meta description <span class="counter" data-counter-for="seo_description"></span></label>
+        <textarea id="seo_description" name="seo_description" rows="3" data-counter="160"><%= product.seo_description %></textarea>
+      </div>
+      <div class="serp" data-serp>
+        <div class="serp__url"><%= (settings.siteUrl || '') %>/products/<%= product.handle %>/</div>
+        <div class="serp__title" data-serp-title></div>
+        <div class="serp__desc" data-serp-desc></div>
+      </div>
+    </div>
+
+    <div class="panel" data-repeater>
+      <div class="panel__head">
+        <h2>Product FAQ</h2>
+        <button class="btn btn--sm" type="button" data-repeater-add>Add question</button>
+      </div>
+      <p class="hint">Published as <code>FAQPage</code> structured data, which is eligible for rich results and is readily quoted by AI assistants. Leave empty to inherit a sensible default set based on this product's condition and compatibility.</p>
+      <div data-repeater-list>
+        <% faq.forEach(function (f) { %>
+        <div data-repeater-row style="border-bottom:1px solid var(--line);padding-bottom:.6rem;margin-bottom:.6rem">
+          <div class="field"><label>Question</label><input type="text" name="faq_q" value="<%= f.q %>"></div>
+          <div class="field"><label>Answer</label><textarea name="faq_a" rows="2"><%= f.a %></textarea></div>
+          <button class="btn btn--sm" type="button" data-repeater-remove>Remove</button>
+        </div>
+        <% }); %>
+      </div>
+      <template>
+        <div data-repeater-row style="border-bottom:1px solid var(--line);padding-bottom:.6rem;margin-bottom:.6rem">
+          <div class="field"><label>Question</label><input type="text" name="faq_q" value=""></div>
+          <div class="field"><label>Answer</label><textarea name="faq_a" rows="2"></textarea></div>
+          <button class="btn btn--sm" type="button" data-repeater-remove>Remove</button>
+        </div>
+      </template>
+    </div>
+  </div>
+
+  <!-- sidebar -->
+  <div>
+    <div class="panel">
+      <button class="btn btn--primary" type="submit" style="width:100%">Save product</button>
+      <p class="hint" style="margin-top:.6rem">Saving updates the database. Go to <a href="/publish">Publish</a> to regenerate the site.</p>
+    </div>
+
+    <% if (score) { %>
+    <div class="panel">
+      <div class="panel__head"><h2>SEO score</h2><%- include('../partials/score', { score: score.score, grade: score.grade }) %></div>
+      <ul class="checklist">
+        <% score.checks.forEach(function (c) { %>
+        <li>
+          <span class="mark mark--<%= c.ok ? 'ok' : 'no' %>"><%= c.ok ? '✓' : '✗' %></span>
+          <span><%= c.label %><% if (!c.ok) { %><small><%= c.hint %></small><% } %></span>
+        </li>
+        <% }); %>
+      </ul>
+    </div>
+    <% } %>
+
+    <div class="panel">
+      <div class="panel__head"><h2>Categories</h2><a href="/categories">Manage →</a></div>
+      <% ['category', 'brand'].forEach(function (kind) { %>
+      <h3 style="margin-top:.5rem"><%= kind === 'brand' ? 'Brands' : 'Categories' %></h3>
+      <% categories.filter(function (c) { return c.kind === kind; }).forEach(function (c) { %>
+      <label class="check" style="font-weight:400">
+        <input type="checkbox" name="categories" value="<%= c.id %>"<%= assigned.has(c.id) ? ' checked' : '' %>>
+        <span><%= c.name %></span>
+      </label>
+      <% }); %>
+      <% }); %>
+    </div>
+  </div>
+</div>
+</form>
+
+<% if (product.id) { %>
+<form id="rederive" method="post" action="/products/<%= product.id %>/rederive"></form>
+<form id="addvariant" method="post" action="/products/<%= product.id %>/variants/add"></form>
+
+<div class="panel" id="images">
+  <div class="panel__head"><h2>Images <span class="hint" style="margin:0">— <%= images.length %></span></h2></div>
+  <% if (!images.length) { %>
+  <p class="note">This product has no image, so the site shows a placeholder. Adding one is the single biggest improvement you can make here.</p>
+  <% } %>
+
+  <form method="post" action="/products/<%= product.id %>/images" enctype="multipart/form-data" style="margin-bottom:1rem">
+    <div class="field" style="max-width:420px">
+      <label for="files">Upload images <span class="opt">(JPEG, PNG, WebP, AVIF — up to 12 at once)</span></label>
+      <input id="files" type="file" name="files" accept="image/*" multiple required>
+      <p class="hint">Each upload is resized to 1200px and 500px WebP (plus a JPEG fallback) by the same pipeline used for the migrated images. The original is archived in <code>data/originals/</code>.</p>
+    </div>
+    <button class="btn btn--primary" type="submit">Upload</button>
+  </form>
+
+  <% if (images.length) { %>
+  <form method="post" action="/products/<%= product.id %>/images/save">
+    <div class="imggrid">
+      <% images.forEach(function (img) { %>
+      <div class="imgcard">
+        <img src="/site<%= img.thumb %>" alt="<%= img.alt %>" loading="lazy">
+        <input type="hidden" name="image_id" value="<%= img.id %>">
+        <label class="visually-hidden" for="alt-<%= img.id %>">Alt text</label>
+        <input id="alt-<%= img.id %>" type="text" name="image_alt" value="<%= img.alt %>" placeholder="Describe the image">
+        <div class="imgcard__foot">
+          <input type="number" name="image_position" value="<%= img.position %>" min="1" aria-label="Position">
+          <button class="btn btn--sm btn--danger" type="submit" formaction="/products/<%= product.id %>/images/<%= img.id %>/delete">Delete</button>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+    <button class="btn btn--primary" type="submit" style="margin-top:.9rem">Save alt text &amp; order</button>
+  </form>
+  <% } %>
+</div>
+
+<div class="panel">
+  <div class="panel__head"><h2 style="color:var(--bad)">Delete this product</h2></div>
+  <form method="post" action="/products/<%= product.id %>/delete" data-confirm="Delete this product and its images? This cannot be undone.">
+    <div class="field" style="max-width:380px">
+      <label for="confirm">Type <code><%= product.handle %></code> to confirm</label>
+      <input id="confirm" name="confirm" type="text" autocomplete="off" required>
+    </div>
+    <button class="btn btn--danger" type="submit">Delete permanently</button>
+  </form>
+</div>
+<% } %>

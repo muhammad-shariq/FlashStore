@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="<%= settings.locale || 'en-GB' %>" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><%= page.title %></title>
+<meta name="description" content="<%= page.description %>">
+<link rel="canonical" href="<%= abs(page.canonicalUrl || page.url) %>">
+<% if (page.prevUrl) { %><link rel="prev" href="<%= abs(page.prevUrl) %>">
+<% } %><% if (page.nextUrl) { %><link rel="next" href="<%= abs(page.nextUrl) %>">
+<% } %><% if (page.noindex) { %><meta name="robots" content="noindex, follow">
+<% } %>
+<meta property="og:type" content="<%= page.ogType || 'website' %>">
+<meta property="og:site_name" content="<%= settings.storeName %>">
+<meta property="og:title" content="<%= page.title %>">
+<meta property="og:description" content="<%= page.description %>">
+<meta property="og:url" content="<%= abs(page.url) %>">
+<meta property="og:locale" content="<%= (settings.locale || 'en-GB').replace('-', '_') %>">
+<% if (page.image) { %><meta property="og:image" content="<%= abs(page.image) %>">
+<meta property="og:image:alt" content="<%= page.imageAlt || page.title %>">
+<% } %>
+<meta name="twitter:card" content="summary_large_image">
+<% if (settings.seo && settings.seo.twitterHandle) { %><meta name="twitter:site" content="<%= settings.seo.twitterHandle %>">
+<% } %>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/inter-variable.woff2" as="font" type="font/woff2" crossorigin>
+<% if (page.preloadImage) { %><link rel="preload" as="image" href="<%= page.preloadImage %>" fetchpriority="high">
+<% } %>
+<link rel="stylesheet" href="/assets/site.css<%= assetVersion %>">
+<script type="application/ld+json"><%- page.jsonLd %></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<%- include('partials/header', { settings, nav, page }) %>
+
+<main id="main">
+<%- body %>
+</main>
+
+<%- include('partials/footer', { settings, nav }) %>
+<%- include('partials/cart-drawer', { settings }) %>
+
+<div class="toast" data-toast data-show="false" role="status" aria-live="polite"><div class="toast__inner"></div></div>
+
+<script>window.GSMW=<%- clientConfig %>;</script>
+<script src="/assets/cart.js<%= assetVersion %>" defer></script>
+<script src="/assets/search.js<%= assetVersion %>" defer></script>
+<% (page.scripts || []).forEach(function (s) { %><script src="<%= s %><%= assetVersion %>" defer></script>
+<% }); %>
+</body>
+</html>

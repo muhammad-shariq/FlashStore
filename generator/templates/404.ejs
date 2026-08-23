@@ -1,0 +1,19 @@
+<div class="wrap">
+  <div class="page-head" style="padding-block:4rem 2rem;text-align:center">
+    <h1>Page not found</h1>
+    <p style="margin-inline:auto">That page doesn't exist — it may have moved since the shop changed platform. Try searching for the part you need, or browse the categories below.</p>
+  </div>
+
+  <form action="/search/" method="get" role="search" style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem">
+    <label class="visually-hidden" for="nf-q">Search products</label>
+    <input id="nf-q" type="search" name="q" placeholder="Search model, part or SKU…"
+           style="flex:0 1 320px;padding:.7rem 1rem;border:1px solid var(--border-strong);border-radius:var(--radius-pill)">
+    <button class="btn" type="submit">Search</button>
+  </form>
+
+  <ul class="cat-tiles" role="list" style="margin-bottom:3rem">
+    <% categories.forEach(function (c) { %>
+    <li><a class="cat-tile" href="<%= c.url %>"><%= c.name %><span><%= c.countLabel %></span></a></li>
+    <% }); %>
+  </ul>
+</div>

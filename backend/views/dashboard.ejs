@@ -1,0 +1,99 @@
+<div class="head">
+  <h1>Dashboard</h1>
+  <div class="head__actions">
+    <a class="btn" href="/products/new">New product</a>
+    <a class="btn btn--primary" href="/publish">Publish</a>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><strong><%= counts.products %></strong><span><%= counts.active %> live, <%= counts.products - counts.active %> hidden</span></div>
+  <div class="stat"><strong><%= counts.variants %></strong><span>Variants</span></div>
+  <div class="stat"><strong><%= counts.images %></strong><span>Images</span></div>
+  <div class="stat"><strong><%= counts.categories %></strong><span>Categories</span></div>
+  <div class="stat"><strong><%= counts.brands %></strong><span>Brands</span></div>
+  <div class="stat"><strong><%= avgScore %></strong><span>Average SEO score</span></div>
+</div>
+
+<div class="cols" style="margin-top:1.15rem">
+  <div>
+    <div class="panel">
+      <div class="panel__head">
+        <h2>Catalogue gaps</h2>
+        <span class="hint" style="margin:0">Each links to the products affected.</span>
+      </div>
+      <table>
+        <tbody>
+          <% [
+               ['no-models',     'No compatible models listed',              gaps.noModels,    'warn', 'Highest impact'],
+               ['no-images',     'No image',                                 gaps.noImages,    'bad',  'Fix'],
+               ['no-alt',        'Missing image alt text',                   gaps.noAlt,       'warn', 'Fix'],
+               ['no-price',      'No price (shown as \u201Cenquire\u201D)', gaps.noPrice,     'info', 'Review'],
+               ['thin-body',     'Thin description (under 120 characters)',  gaps.thinBody,    'warn', 'Improve'],
+               ['no-condition',  'No condition stated',                      gaps.noCondition, 'info', 'Review'],
+               ['uncategorised', 'Not in any category',                      uncategorised,    'bad',  'Fix'],
+             ].forEach(function (row) { %>
+          <tr>
+            <td><% if (row[2]) { %><a href="/products?gap=<%= row[0] %>"><%= row[1] %></a><% } else { %><%= row[1] %><% } %></td>
+            <td class="num"><%= row[2] %></td>
+            <td class="num"><% if (row[2]) { %><span class="tag tag--<%= row[3] %>"><%= row[4] %></span><% } else { %><span class="tag tag--ok">Clear</span><% } %></td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head"><h2>Lowest scoring products</h2><a href="/products">All products →</a></div>
+      <table>
+        <thead><tr><th>Product</th><th style="width:140px">Score</th><th>Biggest gap</th></tr></thead>
+        <tbody>
+          <% worst.forEach(function (w) { %>
+          <tr>
+            <td><a href="/products/<%= w.product.id %>"><%= w.product.title %></a></td>
+            <td><%- include('partials/score', { score: w.score, grade: w.grade }) %></td>
+            <td class="hint" style="margin:0"><%= w.issues.length ? w.issues[0].label : '—' %></td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if (duplicates.length) { %>
+    <div class="panel">
+      <div class="panel__head"><h2>Duplicate product titles</h2></div>
+      <p class="hint">These came from the Shopify export — the same part listed twice with different colour subsets. The generator keeps them out of each other's way by disambiguating the page titles and canonicalising true duplicates, but merging them into one product is better for both customers and search.</p>
+      <table>
+        <thead><tr><th>Title</th><th>Handles</th></tr></thead>
+        <tbody>
+          <% duplicates.forEach(function (d) { %>
+          <tr><td><%= d.title %></td><td class="mono"><%= d.handles %></td></tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <% } %>
+  </div>
+
+  <div>
+    <div class="panel">
+      <div class="panel__head"><h2>Last publish</h2></div>
+      <% if (lastBuild) { %>
+      <p>
+        <% if (lastBuild.ok) { %><span class="tag tag--ok">Passed</span><% } else { %><span class="tag tag--bad">Failed</span><% } %>
+        <span class="hint" style="margin:0"><%= lastBuild.finished_at %> UTC</span>
+      </p>
+      <p><%= lastBuild.pages_written %> files written<% if (!lastBuild.ok) { %> — <%= lastBuild.message %><% } %></p>
+      <% } else { %>
+      <p class="hint">The site has not been generated yet.</p>
+      <% } %>
+      <a class="btn btn--primary" href="/publish">Go to publish</a>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head"><h2>How this works</h2></div>
+      <p class="hint">The database in <code>data/store.db</code> is the source of truth. Editing here changes nothing on the live site until you <strong>Publish</strong> (which rewrites <code>web/</code>) and then <strong>Push</strong> (which triggers the DigitalOcean deploy).</p>
+      <p class="hint">Publishing runs an SEO check across every page and refuses to ship a build with a duplicate title, a missing description, an image without alt text or a broken internal link.</p>
+    </div>
+  </div>
+</div>

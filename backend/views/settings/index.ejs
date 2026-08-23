@@ -1,0 +1,133 @@
+<div class="head">
+  <h1>Settings</h1>
+  <div class="head__actions"><a class="btn btn--primary" href="/publish">Publish</a></div>
+</div>
+
+<%
+  // Each channel is reported separately: a WhatsApp number is usable whether or
+  // not an address has been entered, and saying otherwise sends you looking for
+  // a problem that is not there.
+  var channels = [
+    ['WhatsApp number',  contact.whatsapp,
+      'The "Send order on WhatsApp" button is live on the cart.',
+      'The "Send order on WhatsApp" button is hidden until this is set.'],
+    ['Phone number',     contact.phone,
+      'Phone links appear in the footer and on the contact page.',
+      'No phone number is shown anywhere on the site.'],
+    ['Email address',    contact.email,
+      'The "Send order by email" button is live on the cart.',
+      'The "Send order by email" button is hidden until this is set.'],
+    ['Business address', contact.address,
+      'Published on the contact page and as LocalBusiness structured data.',
+      'No address is shown, and no LocalBusiness structured data is published.'],
+  ];
+  var pending = channels.filter(function (c) { return !c[1]; });
+%>
+<div class="note<%= pending.length ? '' : ' note--info' %>">
+  <strong><%= pending.length ? 'Some contact details are still placeholders.' : 'All contact details are set.' %></strong>
+  <table style="margin-top:.5rem">
+    <tbody>
+      <% channels.forEach(function (c) { %>
+      <tr>
+        <td style="width:150px"><%= c[0] %></td>
+        <td style="width:70px"><% if (c[1]) { %><span class="tag tag--ok">set</span><% } else { %><span class="tag tag--warn">placeholder</span><% } %></td>
+        <td class="hint" style="margin:0"><%= c[1] ? c[2] : c[3] %></td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <p class="hint" style="margin:.5rem 0 0">Placeholders are never published as structured data — asserting an invented phone number or address as a machine-readable fact would be worse than asserting nothing. <strong>Changes only reach the live site after you <a href="/publish">publish</a>.</strong></p>
+</div>
+
+<%
+  // Store Logo panel — separate form with multipart enctype so it doesn't
+  // interfere with the main urlencoded settings form.
+  var currentLogo = values['storeLogo'] || '';
+%>
+<div class="panel">
+  <div class="panel__head"><h2>Store logo</h2></div>
+  <p class="hint">Upload an image to display in the site header instead of the plain text store name. Recommended: SVG or PNG with transparent background, max 5 MB.</p>
+  <div class="row">
+    <% if (currentLogo) { %>
+    <div class="field" style="grid-column:1/-1">
+      <label>Current logo</label>
+      <div style="margin:.4rem 0 .8rem">
+        <img src="/site<%= currentLogo %>" alt="Current store logo" style="max-height:64px;max-width:240px;border:1px solid var(--border-soft);border-radius:4px;padding:4px;background:#fff;">
+      </div>
+      <form method="post" action="/settings/logo/remove">
+        <button class="btn btn--danger" type="submit">Remove logo</button>
+      </form>
+    </div>
+    <% } %>
+    <div class="field" style="grid-column:1/-1;margin-top:<%= currentLogo ? '.8rem' : '0' %>">
+      <form method="post" action="/settings/logo" enctype="multipart/form-data" style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+        <label for="logo-file" style="margin:0"><%= currentLogo ? 'Replace logo' : 'Upload logo' %></label>
+        <input id="logo-file" name="storeLogo" type="file" accept="image/*" required>
+        <button class="btn btn--primary" type="submit">Upload</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<form method="post" action="/settings">
+  <% groups.forEach(function (group) { %>
+  <div class="panel">
+    <div class="panel__head"><h2><%= group.title %></h2></div>
+    <% if (group.hint) { %><p class="hint"><%= group.hint %></p><% } %>
+    <div class="row">
+      <% group.fields.forEach(function (f) {
+           var key = f[0], label = f[1], type = f[2], hint = f[3];
+           var value = values[key] == null ? '' : values[key]; %>
+      <div class="field"<%= type === 'textarea' ? ' style="grid-column:1/-1"' : '' %>>
+        <% if (type === 'checkbox') { %>
+        <label class="check">
+          <input type="checkbox" name="<%= key %>" value="1"<%= String(value) === 'true' ? ' checked' : '' %>>
+          <span><%= label %></span>
+        </label>
+        <% } else { %>
+        <label for="s-<%= key %>"><%= label %></label>
+        <% if (type === 'textarea') { %>
+        <textarea id="s-<%= key %>" name="<%= key %>" rows="3"><%= value %></textarea>
+        <% } else { %>
+        <input id="s-<%= key %>" name="<%= key %>" type="<%= type %>" value="<%= value %>">
+        <% } %>
+        <% } %>
+        <% if (hint) { %><p class="hint"><%= hint %></p><% } %>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+  <% }); %>
+
+  <div class="panel">
+    <button class="btn btn--primary" type="submit">Save settings</button>
+    <p class="hint" style="margin-top:.6rem">Saving also writes these values back to <code>site.config.json</code>, so a fresh clone of the repository starts from the same configuration.</p>
+  </div>
+</form>
+
+<h2 id="pages" style="margin-top:2rem">Page copy</h2>
+<p class="hint">The About, Contact and policy pages. Anything wrapped in <code>[[double brackets]]</code> is a placeholder that still needs your input — the publish step counts them and warns.</p>
+
+<% pages.forEach(function (p) { %>
+<div class="panel">
+  <div class="panel__head">
+    <h3><%= p.heading %></h3>
+    <span>
+      <% if (p.isDefault) { %><span class="tag tag--mute">default copy</span><% } else { %><span class="tag tag--info">edited</span><% } %>
+      <% var count = (p.body.match(/\[\[[^\]]+\]\]/g) || []).length; %>
+      <% if (count) { %><span class="tag tag--warn"><%= count %> placeholder<%= count === 1 ? '' : 's' %></span><% } %>
+      <a href="/site/<%= p.slug %>/" target="_blank" rel="noopener">View ↗</a>
+    </span>
+  </div>
+  <form method="post" action="/settings/pages/<%= p.slug %>">
+    <div class="field">
+      <label class="visually-hidden" for="page-<%= p.slug %>">Body HTML</label>
+      <textarea id="page-<%= p.slug %>" name="body" class="tall"><%= p.body %></textarea>
+    </div>
+    <button class="btn btn--primary" type="submit">Save page</button>
+    <% if (!p.isDefault) { %>
+    <button class="btn" type="submit" name="reset" value="1">Reset to default copy</button>
+    <% } %>
+  </form>
+</div>
+<% }); %>

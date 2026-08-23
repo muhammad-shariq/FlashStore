@@ -1,0 +1,82 @@
+<% if (settings.announcement) { %>
+<div class="announce"><div class="wrap"><%= settings.announcement %></div></div>
+<% } %>
+<header class="header">
+  <div class="wrap header__bar">
+    <button class="icon-btn nav-toggle" type="button" data-drawer-open="nav-drawer" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+
+    <a class="header__logo" href="/">
+      <% if (settings.storeLogo) { %>
+        <img src="<%= settings.storeLogo %>" alt="<%= settings.storeName %>" style="max-height: 40px; width: auto;">
+      <% } else { %>
+        <b><%= settings.storeName.split(' ')[0] %></b> <%= settings.storeName.split(' ').slice(1).join(' ') %>
+      <% } %>
+    </a>
+
+    <nav class="header__nav" aria-label="Main">
+      <ul class="nav-list">
+        <li><a href="/products/"<%= page.url === '/products/' ? ' aria-current="page"' : '' %>>All Products</a></li>
+        <% nav.headerCategories.forEach(function (c) { %>
+        <li><a href="<%= c.url %>"<%= page.url === c.url ? ' aria-current="page"' : '' %>><%= c.navLabel %></a></li>
+        <% }); %>
+        <li><a href="/contact/"<%= page.url === '/contact/' ? ' aria-current="page"' : '' %>>Contact</a></li>
+      </ul>
+    </nav>
+
+    <form class="header-search" action="/search/" method="get" role="search" data-search-form>
+      <label class="visually-hidden" for="header-q">Search products</label>
+      <input id="header-q" type="search" name="q" placeholder="Search model, part or SKU…" autocomplete="off">
+      <button type="submit" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </button>
+      <div class="suggest" data-suggest data-open="false"></div>
+    </form>
+
+    <div class="header__actions">
+      <a class="icon-btn" href="/search/" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </a>
+      <button class="icon-btn" type="button" data-drawer-open="cart-drawer" aria-label="Open your order">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="cart-count" data-cart-count data-count="0">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="drawer" id="nav-drawer" data-open="false" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="drawer__scrim" data-drawer-close></div>
+  <div class="drawer__panel">
+    <div class="drawer__head">
+      <h2>Browse</h2>
+      <button class="icon-btn" type="button" data-drawer-close aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="drawer__body">
+      <form action="/search/" method="get" role="search" data-search-form style="position:relative;margin-bottom:1rem">
+        <label class="visually-hidden" for="drawer-q">Search products</label>
+        <input id="drawer-q" type="search" name="q" placeholder="Search model, part or SKU…" autocomplete="off"
+               style="width:100%;padding:.6rem .9rem;border:1px solid var(--border-strong);border-radius:var(--radius-pill)">
+        <div class="suggest" data-suggest data-open="false"></div>
+      </form>
+      <ul class="drawer-nav">
+        <li><a href="/products/">All Products <span><%= nav.totalProducts %></span></a></li>
+        <li class="drawer-nav__label">Categories</li>
+        <% nav.categories.forEach(function (c) { %>
+        <li><a href="<%= c.url %>"><%= c.name %> <span><%= c.product_count %></span></a></li>
+        <% }); %>
+        <li class="drawer-nav__label">Brands</li>
+        <% nav.brands.forEach(function (b) { %>
+        <li><a href="<%= b.url %>"><%= b.name %> <span><%= b.product_count %></span></a></li>
+        <% }); %>
+        <li class="drawer-nav__label">Help</li>
+        <% nav.pages.forEach(function (p) { %>
+        <li><a href="<%= p.url %>"><%= p.name %></a></li>
+        <% }); %>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<%- include('partials/breadcrumbs', { trail }) %>
+<div class="wrap">
+  <div class="page-head">
+    <h1>Contact <%= settings.storeName %></h1>
+    <p>Ask about stock, compatibility or trade pricing<%= contact.whatsapp ? ' — the fastest way to reach us is WhatsApp' : '' %>.</p>
+  </div>
+
+  <%
+    // Only name the details that are genuinely still unset, so the notice stays
+    // accurate as each one is filled in rather than being all-or-nothing.
+    var missing = [];
+    if (!contact.whatsapp) missing.push('WhatsApp number');
+    if (!contact.phone) missing.push('phone number');
+    if (!contact.address) missing.push('business address');
+  %>
+  <% if (missing.length) { %>
+  <p class="notice"><strong>Setup needed:</strong> the shop's
+    <%= missing.length === 1 ? missing[0] : missing.slice(0, -1).join(', ') + ' and ' + missing[missing.length - 1] %>
+    <%= missing.length === 1 ? 'is' : 'are' %> still a placeholder. Fill
+    <%= missing.length === 1 ? 'it' : 'them' %> in on the admin Settings page and publish again.
+    <% if (!contact.address) { %>No address is published as structured data until it is real.<% } %>
+  </p>
+  <% } %>
+
+  <div class="contact-grid" style="margin-bottom:2rem">
+    <% if (contact.whatsapp) { %>
+    <div class="contact-card">
+      <h2>WhatsApp</h2>
+      <p>Message us a model number and we will confirm what we have in stock.</p>
+      <a class="btn btn--whatsapp btn--sm" href="<%= whatsappLink %>" rel="noopener" target="_blank"><%= contact.phone ? settings.contact.phoneDisplay : 'Open WhatsApp' %></a>
+    </div>
+    <% } %>
+
+    <% if (contact.phone) { %>
+    <div class="contact-card">
+      <h2>Phone</h2>
+      <p><%= settings.contact.openingHours %></p>
+      <a class="btn btn--outline btn--sm" href="<%= telLink %>"><%= settings.contact.phoneDisplay %></a>
+    </div>
+    <% } %>
+
+    <% if (contact.email) { %>
+    <div class="contact-card">
+      <h2>Email</h2>
+      <p>For orders, quotes and trade enquiries.</p>
+      <a class="btn btn--outline btn--sm" href="mailto:<%= settings.contact.supportEmail %>"><%= settings.contact.supportEmail %></a>
+    </div>
+    <% } %>
+
+    <% if (contact.address) { %>
+    <div class="contact-card">
+      <h2>Address</h2>
+      <p><%= [settings.contact.addressLine1, settings.contact.addressLine2, settings.contact.city, settings.contact.postcode, settings.contact.country].filter(Boolean).join(', ') %></p>
+    </div>
+    <% } %>
+  </div>
+
+  <div class="prose"><%- body %></div>
+
+  <% if (faq.length) { %>
+  <section class="section" aria-labelledby="contact-faq">
+    <h2 id="contact-faq">Frequently asked questions</h2>
+    <div class="accordion">
+      <% faq.forEach(function (f) { %>
+      <details><summary><%= f.q %></summary><div class="accordion__body prose"><p><%= f.a %></p></div></details>
+      <% }); %>
+    </div>
+  </section>
+  <% } %>
+</div>

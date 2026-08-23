@@ -1,0 +1,23 @@
+<div class="drawer drawer--right" id="cart-drawer" data-open="false" role="dialog" aria-modal="true" aria-label="Your order">
+  <div class="drawer__scrim" data-drawer-close></div>
+  <div class="drawer__panel">
+    <div class="drawer__head">
+      <h2>Your order <span data-cart-itemcount style="font-weight:400;color:var(--text-muted)"></span></h2>
+      <button class="icon-btn" type="button" data-drawer-close aria-label="Close order">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="drawer__body">
+      <p data-cart-empty class="cart-note">Your order is empty. Add the parts you need and send the list to us in one message.</p>
+      <ul class="cart-lines" data-cart-lines></ul>
+    </div>
+    <div class="drawer__foot" data-cart-filled hidden>
+      <div class="cart-totals__row cart-totals__row--total">
+        <span>Subtotal</span><span data-cart-subtotal>£0.00</span>
+      </div>
+      <p class="cart-note" data-cart-poa-note hidden>Some items are priced on request and are not included in the subtotal.</p>
+      <p class="cart-note">Postage is confirmed when we reply.</p>
+      <a class="btn btn--wide" href="/cart/">Review &amp; send order</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,107 @@
+<div class="head">
+  <h1>Products <span class="hint" style="margin:0;font-weight:400">— <%= total %> matching</span></h1>
+  <div class="head__actions">
+    <a class="btn" href="/products/new">New product</a>
+    <a class="btn btn--primary" href="/publish">Publish</a>
+  </div>
+</div>
+
+<form class="filters" method="get" action="/products">
+  <div class="field field--grow">
+    <label for="q">Search title, handle, SKU or compatible model</label>
+    <input id="q" type="search" name="q" value="<%= q %>" placeholder="e.g. SM-G970F, back cover, 41574402228356">
+  </div>
+  <div class="field">
+    <label for="category">Category</label>
+    <select id="category" name="category">
+      <option value="">All</option>
+      <% categories.forEach(function (c) { %>
+      <option value="<%= c.id %>"<%= categoryId === c.id ? ' selected' : '' %>><%= c.kind === 'brand' ? 'Brand: ' : '' %><%= c.name %></option>
+      <% }); %>
+    </select>
+  </div>
+  <div class="field">
+    <label for="status">Status</label>
+    <select id="status" name="status">
+      <option value="">Any</option>
+      <option value="active"<%= status === 'active' ? ' selected' : '' %>>Live</option>
+      <option value="hidden"<%= status === 'hidden' ? ' selected' : '' %>>Hidden</option>
+    </select>
+  </div>
+  <% if (gap) { %><input type="hidden" name="gap" value="<%= gap %>"><% } %>
+  <div class="field"><button class="btn btn--primary" type="submit">Filter</button></div>
+  <% if (q || categoryId || status || gap) { %><div class="field"><a class="btn" href="/products">Reset</a></div><% } %>
+</form>
+
+<% if (gap) { %>
+<div class="note note--info">
+  Showing only products with this gap:
+  <strong><%= ({ 'no-models': 'no compatible models listed', 'no-images': 'no image', 'no-alt': 'an image missing alt text', 'no-price': 'no price', 'thin-body': 'a thin description', 'no-condition': 'no condition stated', uncategorised: 'no category' })[gap] || gap %></strong>.
+  <a href="/products">Show all products</a>
+</div>
+<% } %>
+
+<div class="panel" style="padding:0;overflow-x:auto">
+  <% if (!products.length) { %>
+  <p class="empty">No products match those filters.</p>
+  <% } else { %>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:56px"></th>
+        <th>Product</th>
+        <th>Part type</th>
+        <th>Fits</th>
+        <th class="num">Price</th>
+        <th class="num">Imgs</th>
+        <th style="width:130px">SEO</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% products.forEach(function (p) { %>
+      <tr>
+        <td>
+          <% if (p.thumb) { %><img class="thumb" src="/site<%= p.thumb %>" alt="" loading="lazy">
+          <% } else { %><span class="tag tag--bad">none</span><% } %>
+        </td>
+        <td>
+          <a href="/products/<%= p.id %>"><%= p.title %></a>
+          <% if (p.status !== 'active') { %> <span class="tag tag--mute">hidden</span><% } %>
+          <br><span class="hint mono" style="margin:0"><%= p.handle %></span>
+        </td>
+        <td><%= p.part_type || '—' %><% if (p.condition_grade) { %><br><span class="hint" style="margin:0"><%= p.condition_grade %></span><% } %></td>
+        <td>
+          <% var fits = []; try { fits = JSON.parse(p.fits_models || '[]'); } catch (e) {} %>
+          <% if (fits.length) { %><span class="hint" style="margin:0"><%= fits.slice(0, 2).join(', ') %><%= fits.length > 2 ? ' +' + (fits.length - 2) : '' %></span>
+          <% } else { %><span class="tag tag--warn">none</span><% } %>
+        </td>
+        <td class="num"><% if (p.min_price) { %>£<%= p.min_price.toFixed(2) %><% } else { %><span class="tag tag--info">enquire</span><% } %></td>
+        <td class="num"><%= p.image_count %></td>
+        <td><%- include('../partials/score', { score: p.score, grade: p.grade }) %></td>
+        <td class="num"><a class="btn btn--sm" href="/products/<%= p.id %>">Edit</a></td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <% } %>
+</div>
+
+<% if (totalPages > 1) { %>
+<nav class="pager" aria-label="Pagination">
+  <% function pageHref(n) {
+       var qs = new URLSearchParams();
+       if (q) qs.set('q', q);
+       if (categoryId) qs.set('category', categoryId);
+       if (status) qs.set('status', status);
+       if (gap) qs.set('gap', gap);
+       qs.set('page', n);
+       return '/products?' + qs.toString();
+     } %>
+  <% if (page > 1) { %><a href="<%= pageHref(page - 1) %>">← Previous</a><% } %>
+  <% for (var n = 1; n <= totalPages; n++) { %>
+    <% if (n === page) { %><span aria-current="page"><%= n %></span><% } else { %><a href="<%= pageHref(n) %>"><%= n %></a><% } %>
+  <% } %>
+  <% if (page < totalPages) { %><a href="<%= pageHref(page + 1) %>">Next →</a><% } %>
+</nav>
+<% } %>
