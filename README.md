@@ -31,6 +31,9 @@
 * **🔍 Built-in E-Commerce SEO:** Dynamic Schema.org structured data, XML sitemap generation, Open Graph tags, and SSR routing.
 * **🔒 Zero Server Vulnerabilities:** No PHP backend or database connections means immune to SQL injections and backend exploits.
 
+<a href="https://www.youtube.com/watch?v=CjtW_Y1sgF4" target="_blank">
+  <img src="https://img.youtube.com/vi/CjtW_Y1sgF4/0.jpg" alt="FlashStore Demo" width="400" />
+</a>
 ---
 
 ## 📊 Feature Comparison Matrix
