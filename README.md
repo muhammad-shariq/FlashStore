@@ -8,6 +8,7 @@
 *A zero-subscription, FREE hosting, Jamstack alternative to Shopify, WooCommerce, and Magento.*
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Click_Here-brightgreen?style=for-the-badge&logo=digitalocean)](https://flashstore-lulze.ondigitalocean.app/)
+[![Deploy on Green Cloud](https://img.shields.io/badge/Deploy-Green_Cloud_Credits-00b4d8?style=for-the-badge&logo=digitalocean)](https://m.do.co/c/1ad0580cc142)
 [![Hire Me](https://img.shields.io/badge/Available_for_Hire-Contact_Me-blue?style=for-the-badge&logo=mail.ru)](#-need-customization-or-professional-deployment)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
