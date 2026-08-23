@@ -14,7 +14,9 @@ const WEB_ROOT = path.resolve(__dirname, '..', '..', 'web');
 
 const PLACEHOLDER = {
   large: '/assets/placeholder.svg',
+  medium: '/assets/placeholder.svg',
   thumb: '/assets/placeholder.svg',
+  small: '/assets/placeholder.svg',
   fallback: null,
   alt: 'Image coming soon',
   width: 1200,
@@ -90,9 +92,16 @@ function loadProducts(conn, settings) {
       // The JPEG fallback is optional, so only advertise it when it exists —
       // otherwise the templates would emit a <source> pointing at a 404.
       const hasFallback = fs.existsSync(path.join(WEB_ROOT, paths.fallback.replace(/^\//, '')));
+      // Same reasoning for the 300 px step: it only exists once
+      // scripts/optimize-images.js has run, and a srcset entry that 404s is
+      // worse than no srcset at all.
+      const hasSmall = fs.existsSync(path.join(WEB_ROOT, paths.small.replace(/^\//, '')));
+      const hasMedium = fs.existsSync(path.join(WEB_ROOT, paths.medium.replace(/^\//, '')));
       return {
         id: i.id,
         ...paths,
+        small: hasSmall ? paths.small : paths.thumb,
+        medium: hasMedium ? paths.medium : paths.large,
         fallback: hasFallback ? paths.fallback : null,
         alt: i.alt || p.title,
         width: i.width || 1200,

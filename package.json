@@ -10,6 +10,7 @@
   "scripts": {
     "import": "node scripts/import-shopify.js",
     "images": "node scripts/download-images.js",
+    "images:optimize": "node scripts/optimize-images.js",
     "categorize": "node scripts/categorize.js",
     "build": "node generator/build.js",
     "admin": "node backend/server.js",

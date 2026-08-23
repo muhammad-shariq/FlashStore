@@ -9,12 +9,16 @@
       <% if (product.onSale) { %><span class="badge badge--sale">Sale</span><% } %>
       <% if (product.conditionGrade) { %><span class="badge badge--cond"><%= product.conditionGrade.split(' · ')[0] %></span><% } %>
       <a href="<%= product.url %>" tabindex="-1" aria-hidden="true">
-        <img src="<%= product.images[0].thumb %>" alt=""
+        <%# A card is ~276 CSS px at the 1200 px page width and ~47vw on a
+            phone, so the 500 px thumbnail is only ever the right file on a 2x
+            screen. cardSrcset/CARD_SIZES let the browser take the 300 px one
+            when that is enough — roughly half the bytes per card. %>
+        <img src="<%= product.images[0].thumb %>"<%- cardSrcset(product.images[0]) %> alt=""
              width="<%= product.images[0].width %>" height="<%= product.images[0].height %>"
              loading="<%= eager ? 'eager' : 'lazy' %>" decoding="async"
              <%= eager ? 'fetchpriority="high"' : '' %>>
         <% if (product.images.length > 1) { %>
-        <img class="card__img--alt" src="<%= product.images[1].thumb %>" alt=""
+        <img class="card__img--alt" src="<%= product.images[1].thumb %>"<%- cardSrcset(product.images[1]) %> alt=""
              width="<%= product.images[1].width %>" height="<%= product.images[1].height %>"
              loading="lazy" decoding="async">
         <% } %>

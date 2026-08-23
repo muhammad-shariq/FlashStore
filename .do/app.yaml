@@ -28,5 +28,19 @@ static_sites:
     # Every page is a real file at a real path (directory-per-page), so no
     # catchall rewrite is needed — a genuine 404 should return a 404.
 
+    # Caching: App Platform serves static files with a fixed
+    #   cache-control: public,max-age=10,s-maxage=86400
+    # and the app spec has no field to change it, which is what Lighthouse
+    # flags as "use efficient cache lifetimes" — the CDN caches for a day but
+    # every browser re-validates after ten seconds. The build compensates where
+    # it can (the stylesheet is inlined, cart+search ship as one file), but
+    # fixing the header itself needs one of:
+    #   * a custom domain fronted by Cloudflare with a cache rule setting
+    #     Browser Cache TTL for /assets/* (asset URLs are content-hashed, so a
+    #     long TTL is safe), or
+    #   * serving web/ from a small service component instead of a static site,
+    #     where the response headers are yours to set.
+    # https://ideas.digitalocean.com/app-platform/p/static-site-headers-and-routing
+
     routes:
       - path: /

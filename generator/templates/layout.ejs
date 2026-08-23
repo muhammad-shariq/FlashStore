@@ -24,9 +24,13 @@
 <% } %>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/inter-variable.woff2" as="font" type="font/woff2" crossorigin>
-<% if (page.preloadImage) { %><link rel="preload" as="image" href="<%= page.preloadImage %>" fetchpriority="high">
+<% if (page.preloadImage) { %><link rel="preload" as="image" href="<%= page.preloadImage %>"<% if (page.preloadImageSrcset) { %> imagesrcset="<%= page.preloadImageSrcset %>" imagesizes="<%= page.preloadImageSizes %>"<% } %> fetchpriority="high">
 <% } %>
-<link rel="stylesheet" href="/assets/site.css<%= assetVersion %>">
+<%# The stylesheet is inlined rather than linked: at ~5 KB gzipped it costs
+    less than the round trip it removes, and DigitalOcean App Platform serves
+    static files with max-age=10, so an external file is re-validated on almost
+    every navigation anyway. Nothing then blocks the first paint. %>
+<style><%- inlineCss %></style>
 <script type="application/ld+json"><%- page.jsonLd %></script>
 </head>
 <body>
@@ -44,8 +48,7 @@
 <div class="toast" data-toast data-show="false" role="status" aria-live="polite"><div class="toast__inner"></div></div>
 
 <script>window.GSMW=<%- clientConfig %>;</script>
-<script src="/assets/cart.js<%= assetVersion %>" defer></script>
-<script src="/assets/search.js<%= assetVersion %>" defer></script>
+<script src="/assets/app.js<%= assetVersion %>" defer></script>
 <% (page.scripts || []).forEach(function (s) { %><script src="<%= s %><%= assetVersion %>" defer></script>
 <% }); %>
 </body>

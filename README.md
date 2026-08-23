@@ -100,8 +100,34 @@ writing to the same database. To run it elsewhere, use `PORT=4001 npm run admin`
 | `npm run serve` | Serve `web/` on `localhost:4300` the way DigitalOcean will. |
 | `npm run import` | Re-read the Shopify CSV. Keeps your edits (see below). |
 | `npm run images` | Download and process any images not yet on disk. Resumable. |
+| `npm run images:optimize` | Fill in missing derivatives (e.g. after a new size is added) from what is already on disk — no network. |
 | `npm run categorize` | Re-derive category assignments. Additive — never removes your changes. |
 | `npm run setup` | All of the above, in order. Only needed on a fresh clone. |
+
+## What the build does for performance
+
+Everything below happens during `npm run build` — there is no runtime to tune.
+
+* **The stylesheet is inlined.** `generator/assets/site.css` is minified
+  (`generator/lib/minify.js`) and written straight into every page's `<head>`,
+  so nothing blocks the first paint. It is still published at
+  `/assets/site.css` for debugging, just not linked.
+* **One script for the whole site.** `cart.js` and `search.js` are concatenated
+  into `/assets/app.js`; page-specific scripts stay separate. All are deferred.
+* **Four image derivatives** per photo — 300, 500, 800 and 1200 px WebP — and
+  every `<img>` gets a `srcset` plus a `sizes` that describes the *painted* box
+  (the media boxes are `object-fit: contain` with padding, and portrait photos
+  paint narrower still, so `sizes` is scaled by the image's aspect ratio).
+  Dropping the 800 px step saves ~16 MB in the repository at the cost of
+  serving the 1200 px file to product pages: remove it from `SIZES` in
+  `backend/lib/images.js` and delete the `*-800.webp` files.
+* **The LCP image is preloaded** on product and listing pages, with the same
+  `imagesrcset`/`imagesizes` as the `<img>` so the hint cannot cause a second
+  download.
+
+One thing the build cannot fix: App Platform serves static files with a fixed
+`max-age=10`, which Lighthouse reports as *use efficient cache lifetimes*. See
+the note in `.do/app.yaml` for the two ways around it.
 
 ## The daily loop
 

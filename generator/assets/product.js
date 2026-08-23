@@ -13,7 +13,12 @@
     if (!thumb) return;
     main.src = thumb.getAttribute('data-large');
     main.alt = thumb.getAttribute('data-alt') || '';
-    main.removeAttribute('srcset');
+    // Keep the swapped-in image responsive: without a matching srcset the
+    // browser would fall back to the 1200 px file on every screen. The <source>
+    // used for the JPEG fallback still has to go, hence the else branch.
+    var srcset = thumb.getAttribute('data-srcset');
+    if (srcset) main.setAttribute('srcset', srcset);
+    else main.removeAttribute('srcset');
     thumbs.forEach(function (t, i) { t.setAttribute('aria-current', i === index ? 'true' : 'false'); });
   }
 

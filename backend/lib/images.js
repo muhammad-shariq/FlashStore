@@ -4,9 +4,16 @@
  * admin uploads, so both produce identical derivatives.
  *
  * For each source image:
- *   web/assets/products/<handle>/<stem>-1200.webp   detail / gallery
- *   web/assets/products/<handle>/<stem>-500.webp    grid thumbnail
+ *   web/assets/products/<handle>/<stem>-1200.webp   detail / gallery (2x)
+ *   web/assets/products/<handle>/<stem>-800.webp    detail / gallery (1x)
+ *   web/assets/products/<handle>/<stem>-500.webp    grid thumbnail (2x)
+ *   web/assets/products/<handle>/<stem>-300.webp    grid thumbnail (1x)
  *   web/assets/products/<handle>/<stem>-1200.jpg    fallback for old clients
+ *
+ * A card renders at roughly 190 CSS px on a phone and 285 on desktop, so the
+ * 500 px thumbnail alone over-serves every 1x screen by ~3x in pixel area.
+ * The 300 px step exists purely so the templates can offer a srcset and let
+ * the browser pick.
  */
 const fs = require('fs');
 const path = require('path');
@@ -18,7 +25,9 @@ const ORIGINALS_ROOT = path.join(ROOT, 'data', 'originals');
 
 const SIZES = [
   { width: 1200, format: 'webp', quality: 80 },
+  { width: 800, format: 'webp', quality: 78 },
   { width: 500, format: 'webp', quality: 78 },
+  { width: 300, format: 'webp', quality: 76 },
   { width: 1200, format: 'jpeg', quality: 82, optional: true },
 ];
 
@@ -45,29 +54,34 @@ function jpegFallbackEnabled() {
 
 const relPaths = (handle, stem) => ({
   large: `/assets/products/${handle}/${stem}-1200.webp`,
+  medium: `/assets/products/${handle}/${stem}-800.webp`,
   thumb: `/assets/products/${handle}/${stem}-500.webp`,
+  small: `/assets/products/${handle}/${stem}-300.webp`,
   fallback: `/assets/products/${handle}/${stem}-1200.jpg`,
 });
 
 const outPaths = (handle, stem) => ({
   large: path.join(WEB_IMAGE_ROOT, handle, `${stem}-1200.webp`),
+  medium: path.join(WEB_IMAGE_ROOT, handle, `${stem}-800.webp`),
   thumb: path.join(WEB_IMAGE_ROOT, handle, `${stem}-500.webp`),
+  small: path.join(WEB_IMAGE_ROOT, handle, `${stem}-300.webp`),
   fallback: path.join(WEB_IMAGE_ROOT, handle, `${stem}-1200.jpg`),
 });
 
 function derivativesExist(handle, stem) {
   const out = outPaths(handle, stem);
-  const required = [out.large, out.thumb];
+  const required = [out.large, out.medium, out.thumb, out.small];
   if (jpegFallbackEnabled()) required.push(out.fallback);
   return required.every((p) => fs.existsSync(p));
 }
 
 /**
  * Write the three derivatives from a source buffer.
+ * @param {{onlyMissing?: boolean}} [opts] skip derivatives already on disk.
  * @returns {{width:number,height:number}} intrinsic size of the source, used to
  *   emit explicit width/height on every <img> (eliminating layout shift).
  */
-async function processBuffer(buffer, handle, stem) {
+async function processBuffer(buffer, handle, stem, opts = {}) {
   const dir = path.join(WEB_IMAGE_ROOT, handle);
   fs.mkdirSync(dir, { recursive: true });
 
@@ -77,7 +91,12 @@ async function processBuffer(buffer, handle, stem) {
 
   for (const size of SIZES) {
     if (size.optional && !wantJpeg) continue;
-    const target = size.format === 'jpeg' ? out.fallback : (size.width === 1200 ? out.large : out.thumb);
+    const target = size.format === 'jpeg'
+      ? out.fallback
+      : { 1200: out.large, 800: out.medium, 500: out.thumb, 300: out.small }[size.width];
+    // Adding a size to SIZES should not rewrite (and re-commit) the ones that
+    // are already correct, so callers can ask for the gaps only.
+    if (opts.onlyMissing && fs.existsSync(target)) continue;
     let pipe = sharp(buffer)
       .rotate()                                     // honour EXIF orientation
       .resize({ width: size.width, withoutEnlargement: true, fit: 'inside' })

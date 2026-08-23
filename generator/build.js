@@ -19,6 +19,7 @@ const data = require('./lib/data');
 const seo = require('./lib/seo');
 const content = require('./lib/content');
 const { validateSite } = require('./lib/validate');
+const { minifyCss } = require('./lib/minify');
 const { escapeHtml, composeTitle } = require('../backend/lib/sanitize');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -52,6 +53,77 @@ function assetHash() {
   return hash.digest('hex').slice(0, 10);
 }
 
+
+/* ------------------------------------------------------------------ */
+/* responsive images                                                   */
+/* ------------------------------------------------------------------ */
+
+/* A product card is ~276 CSS px inside the 1200 px page, ~23vw between 1000
+   and 1200, three-up above 700 and two-up below it — but .card__media img has
+   6% padding on each side, so the painted image is ~12% narrower than the card
+   and `sizes` has to describe that smaller box. Overstating it by even 20% is
+   enough to push a 2x phone from the 300 px derivative up to the 500 px one. */
+const CARD_SIZES = '(min-width: 1200px) 244px, (min-width: 1000px) 20vw, (min-width: 700px) 27vw, 41vw';
+/* Both media boxes are square and both images are object-fit: contain, so a
+   portrait photo paints narrower than the box by exactly its aspect ratio.
+   Scaling `sizes` by that ratio is the difference between the browser taking
+   the 300 px file and the 500 px one for a tall screen protector shot. */
+function scaleSizes(sizes, image) {
+  const ratio = image && image.width && image.height ? image.width / image.height : 1;
+  if (!(ratio < 0.98)) return sizes;
+  // Only the length is scaled — the media conditions in parentheses describe
+  // the viewport and must not move.
+  return sizes.split(',').map((entry) => {
+    const split = entry.lastIndexOf(')');
+    const condition = entry.slice(0, split + 1);
+    return condition + entry.slice(split + 1).replace(/([\d.]+)(px|vw)/, (_, n, unit) => {
+      const scaled = Number(n) * ratio;
+      return `${unit === 'px' ? Math.round(scaled) : Math.round(scaled * 10) / 10}${unit}`;
+    });
+  }).join(',');
+}
+/* Likewise the gallery: the 1.1fr column of a two-column grid above 860px,
+   less the 4% padding on .gallery__main img. */
+const GALLERY_SIZES = '(min-width: 1200px) 525px, (min-width: 860px) 44vw, 85vw';
+
+/** srcset over the two thumbnail derivatives, or '' when there is nothing to choose between. */
+function cardSrcsetValue(image) {
+  if (!image || image.isPlaceholder || !image.small || image.small === image.thumb) return '';
+  return `${image.small} 300w, ${image.thumb} 500w`;
+}
+
+/** Attribute fragment (leading space included) for a card <img>. */
+function cardSrcset(image) {
+  const srcset = cardSrcsetValue(image);
+  return srcset ? ` srcset="${srcset}" sizes="${scaleSizes(CARD_SIZES, image)}"` : '';
+}
+
+function gallerySrcsetValue(image) {
+  if (!image || image.isPlaceholder) return '';
+  const steps = [];
+  if (image.small && image.small !== image.thumb) steps.push(`${image.small} 300w`);
+  steps.push(`${image.thumb} 500w`);
+  // Without the 800 px step a ~350 CSS px gallery on a 2x screen jumps
+  // straight to the 1200 px file, which is twice the bytes it can use.
+  if (image.medium && image.medium !== image.large) steps.push(`${image.medium} 800w`);
+  steps.push(`${image.large} 1200w`);
+  return steps.join(', ');
+}
+
+function gallerySrcset(image) {
+  const srcset = gallerySrcsetValue(image);
+  return srcset ? ` srcset="${srcset}" sizes="${scaleSizes(GALLERY_SIZES, image)}"` : '';
+}
+
+/** Same set, parked on the thumbnail button for product.js to swap in. */
+function gallerySrcsetData(image) {
+  const srcset = gallerySrcsetValue(image);
+  return srcset ? ` data-srcset="${srcset}"` : '';
+}
+
+/* Every page needs both of these, and each is a self-contained IIFE, so they
+   are concatenated into /assets/app.js: one request instead of two. */
+const SITE_BUNDLE = ['cart.js', 'search.js'];
 
 const written = [];
 
@@ -131,6 +203,7 @@ function build() {
   // should produce no diff, so `git status` after a publish shows only what
   // actually changed instead of all 223 pages.
   const assetVersion = `?v=${assetHash()}`;
+  const inlineCss = minifyCss(fs.readFileSync(path.join(ASSET_SRC, 'site.css'), 'utf8'));
   const year = new Date().getFullYear();
 
   log(`Building ${products.length} products, ${categories.length} categories, ${brands.length} brands`);
@@ -247,11 +320,11 @@ function build() {
   function render(templateName, locals, page) {
     const body = ejs.render(
       fs.readFileSync(path.join(TEMPLATES, templateName), 'utf8'),
-      { settings, nav, page, abs, escapeHtml, ...locals },
+      { settings, nav, page, abs, escapeHtml, cardSrcset, gallerySrcset, gallerySrcsetData, ...locals },
       { filename: path.join(TEMPLATES, templateName) },
     );
     return ejs.render(layout, {
-      settings, nav, page, body, abs, clientConfig, assetVersion, year, escapeHtml,
+      settings, nav, page, body, abs, clientConfig, assetVersion, year, escapeHtml, inlineCss,
     }, { filename: layoutPath });
   }
 
@@ -340,6 +413,11 @@ function build() {
         title: `${titleTemplate}${suffix} | ${settings.seo.titleSuffix}`.slice(0, 70),
         description: current === 1 ? descTemplate : `${descTemplate} Page ${current} of ${total}.`.slice(0, 160),
         image: chunk[0] && !chunk[0].images[0].isPlaceholder ? chunk[0].images[0].large : null,
+        // The first card is the LCP element on a listing page and is only
+        // discoverable after the (large) HTML has parsed, so hint it early.
+        preloadImage: chunk[0] && !chunk[0].images[0].isPlaceholder ? chunk[0].images[0].thumb : null,
+        preloadImageSrcset: chunk[0] ? cardSrcsetValue(chunk[0].images[0]) : '',
+        preloadImageSizes: chunk[0] ? scaleSizes(CARD_SIZES, chunk[0].images[0]) : CARD_SIZES,
         prevUrl: current > 1 ? pageUrl(current - 1) : null,
         nextUrl: current < total ? pageUrl(current + 1) : null,
         jsonLd: seo.graph(settings, nodes),
@@ -432,7 +510,12 @@ function build() {
         : p.seoDescription,
       image: p.images[0].isPlaceholder ? null : p.images[0].large,
       imageAlt: p.images[0].alt,
+      // Preload the gallery hero, and preload the *same* candidate set the
+      // <img> will choose from — a bare href would fetch the 1200 px file and
+      // then the img would pick a smaller one, downloading both.
       preloadImage: p.images[0].isPlaceholder ? null : p.images[0].large,
+      preloadImageSrcset: gallerySrcsetValue(p.images[0]),
+      preloadImageSizes: scaleSizes(GALLERY_SIZES, p.images[0]),
       ogType: 'product',
       canonicalUrl: p.canonicalTo || null,
       noindex: !!p.noindex,
@@ -537,8 +620,19 @@ function build() {
   /* static assets                                                 */
   /* ------------------------------------------------------------ */
   for (const file of fs.readdirSync(ASSET_SRC)) {
-    fs.copyFileSync(path.join(ASSET_SRC, file), path.join(WEB, 'assets', file));
+    const from = path.join(ASSET_SRC, file);
+    const to = path.join(WEB, 'assets', file);
+    // site.css is inlined into every page rather than linked; it is still
+    // published (minified) so the file can be fetched directly when debugging.
+    if (file === 'site.css') fs.writeFileSync(to, `${inlineCss}\n`);
+    // cart.js and search.js load on every page, so they ship as one request.
+    else if (SITE_BUNDLE.includes(file)) continue;
+    else fs.copyFileSync(from, to);
   }
+  fs.writeFileSync(
+    path.join(WEB, 'assets', 'app.js'),
+    SITE_BUNDLE.map((f) => fs.readFileSync(path.join(ASSET_SRC, f), 'utf8')).join('\n'),
+  );
   copyFonts();
 
   log(`Wrote ${written.length} files`);
