@@ -6,42 +6,42 @@ FlashStore is a UK supplier of genuine and refurbished mobile phone parts. The c
 
 ## Key pages
 
-- [All products](https://www.FlashStore.com/products/): the complete catalogue, 191 items
-- [Search](https://www.FlashStore.com/search/): search by model, part number or SKU
-- [Contact](https://www.FlashStore.com/contact/): WhatsApp, phone and email details
-- [About](https://www.FlashStore.com/about/): who we are and how parts are graded
-- [Shipping & returns](https://www.FlashStore.com/shipping-returns/): dispatch times and returns policy
-- [Terms of sale](https://www.FlashStore.com/terms/): how orders are confirmed
+- [All products](https://flashstore-lulze.ondigitalocean.app/products/): the complete catalogue, 191 items
+- [Search](https://flashstore-lulze.ondigitalocean.app/search/): search by model, part number or SKU
+- [Contact](https://flashstore-lulze.ondigitalocean.app/contact/): WhatsApp, phone and email details
+- [About](https://flashstore-lulze.ondigitalocean.app/about/): who we are and how parts are graded
+- [Shipping & returns](https://flashstore-lulze.ondigitalocean.app/shipping-returns/): dispatch times and returns policy
+- [Terms of sale](https://flashstore-lulze.ondigitalocean.app/terms/): how orders are confirmed
 
 ## Categories
 
-- [LCD Screens & Displays](https://www.FlashStore.com/collections/lcd-screens-and-displays/): 18 products
-- [Back Covers & Housings](https://www.FlashStore.com/collections/back-covers-and-housings/): 84 products
-- [Empty Boxes](https://www.FlashStore.com/collections/empty-boxes/): 29 products
-- [Batteries](https://www.FlashStore.com/collections/batteries/): 10 products
-- [Charging Ports & Flex Cables](https://www.FlashStore.com/collections/charging-ports-and-flex-cables/): 1 products
-- [Cameras & Lenses](https://www.FlashStore.com/collections/cameras-and-lenses/): 9 products
-- [Screen Protectors](https://www.FlashStore.com/collections/screen-protectors/): 10 products
-- [Cases & Covers](https://www.FlashStore.com/collections/cases-and-covers/): 5 products
-- [Cables & Chargers](https://www.FlashStore.com/collections/cables-and-chargers/): 10 products
-- [Audio & Headphones](https://www.FlashStore.com/collections/audio-and-headphones/): 3 products
-- [Phones & Tablets](https://www.FlashStore.com/collections/phones-and-tablets/): 6 products
-- [Repair Tools & Equipment](https://www.FlashStore.com/collections/repair-tools-and-equipment/): 3 products
-- [Other Accessories](https://www.FlashStore.com/collections/other-accessories/): 3 products
+- [LCD Screens & Displays](https://flashstore-lulze.ondigitalocean.app/collections/lcd-screens-and-displays/): 18 products
+- [Back Covers & Housings](https://flashstore-lulze.ondigitalocean.app/collections/back-covers-and-housings/): 84 products
+- [Empty Boxes](https://flashstore-lulze.ondigitalocean.app/collections/empty-boxes/): 29 products
+- [Batteries](https://flashstore-lulze.ondigitalocean.app/collections/batteries/): 10 products
+- [Charging Ports & Flex Cables](https://flashstore-lulze.ondigitalocean.app/collections/charging-ports-and-flex-cables/): 1 products
+- [Cameras & Lenses](https://flashstore-lulze.ondigitalocean.app/collections/cameras-and-lenses/): 9 products
+- [Screen Protectors](https://flashstore-lulze.ondigitalocean.app/collections/screen-protectors/): 10 products
+- [Cases & Covers](https://flashstore-lulze.ondigitalocean.app/collections/cases-and-covers/): 5 products
+- [Cables & Chargers](https://flashstore-lulze.ondigitalocean.app/collections/cables-and-chargers/): 10 products
+- [Audio & Headphones](https://flashstore-lulze.ondigitalocean.app/collections/audio-and-headphones/): 3 products
+- [Phones & Tablets](https://flashstore-lulze.ondigitalocean.app/collections/phones-and-tablets/): 6 products
+- [Repair Tools & Equipment](https://flashstore-lulze.ondigitalocean.app/collections/repair-tools-and-equipment/): 3 products
+- [Other Accessories](https://flashstore-lulze.ondigitalocean.app/collections/other-accessories/): 3 products
 
 ## Brands
 
-- [Apple](https://www.FlashStore.com/brands/apple/): 89 products
-- [Samsung](https://www.FlashStore.com/brands/samsung/): 85 products
-- [Huawei & Honor](https://www.FlashStore.com/brands/huawei-and-honor/): 10 products
-- [Other Brands](https://www.FlashStore.com/brands/other-brands/): 7 products
+- [Apple](https://flashstore-lulze.ondigitalocean.app/brands/apple/): 89 products
+- [Samsung](https://flashstore-lulze.ondigitalocean.app/brands/samsung/): 85 products
+- [Huawei & Honor](https://flashstore-lulze.ondigitalocean.app/brands/huawei-and-honor/): 10 products
+- [Other Brands](https://flashstore-lulze.ondigitalocean.app/brands/other-brands/): 7 products
 
 ## Machine-readable data
 
-- [Full catalogue as markdown](https://www.FlashStore.com/llms-full.txt)
-- [Catalogue as JSON](https://www.FlashStore.com/products.json)
-- [Google Merchant product feed](https://www.FlashStore.com/feeds/google-merchant.xml)
-- [Sitemap](https://www.FlashStore.com/sitemap.xml)
+- [Full catalogue as markdown](https://flashstore-lulze.ondigitalocean.app/llms-full.txt)
+- [Catalogue as JSON](https://flashstore-lulze.ondigitalocean.app/products.json)
+- [Google Merchant product feed](https://flashstore-lulze.ondigitalocean.app/feeds/google-merchant.xml)
+- [Sitemap](https://flashstore-lulze.ondigitalocean.app/sitemap.xml)
 
 ## Notes for assistants
 

@@ -2,7 +2,7 @@
   "storeName": "FlashStore",
   "tagline": "Genuine mobile phone parts, screens & accessories",
   "shortDescription": "UK supplier of genuine and refurbished mobile phone parts — LCD screens, back covers, batteries, charging ports, cases and accessories for Apple iPhone, Samsung Galaxy, Huawei and more.",
-  "siteUrl": "https://www.FlashStore.com",
+  "siteUrl": "https://flashstore-lulze.ondigitalocean.app/",
   "locale": "en-GB",
   "currency": "GBP",
   "currencySymbol": "£",
@@ -28,7 +28,7 @@
     "ebay": ""
   },
   "seo": {
-    "titleSuffix": "FlashStore Plus",
+    "titleSuffix": "GSM Workshop Plus",
     "defaultDescription": "Genuine and refurbished mobile phone parts, LCD screens, back covers, batteries and accessories for iPhone, Samsung Galaxy and more. UK dispatch.",
     "twitterHandle": ""
   },

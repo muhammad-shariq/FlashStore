@@ -114,15 +114,6 @@ writing to the same database. To run it elsewhere, use `PORT=4001 npm run admin`
 Generate and push are separate on purpose: saving a product can never deploy the
 site by accident.
 
-## First-time deployment
-
-```bash
-git init && git add -A && git commit -m "Initial import from Shopify"
-git branch -M main
-git remote add origin git@github.com:<you>/FlashStore.git
-git push -u origin main
-```
-
 Then in DigitalOcean: **Apps → Create App → GitHub**, pick the repository, and
 choose **Static Site** with output directory `web`. Or edit
 `.do/app.yaml` (replace `<YOUR-GITHUB-USERNAME>`) and run

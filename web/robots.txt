@@ -74,4 +74,4 @@ Allow: /
 Disallow: /cart/
 Disallow: /search/
 
-Sitemap: https://www.FlashStore.com/sitemap.xml
+Sitemap: https://flashstore-lulze.ondigitalocean.app/sitemap.xml
