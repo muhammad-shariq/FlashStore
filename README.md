@@ -5,14 +5,16 @@
 
 ### **The Free, Ultra-Fast, Open-Source Static E-Commerce Engine**
 
-*A zero-subscription, zero-hosting, Jamstack alternative to Shopify, WooCommerce, and Magento.*
+*A zero-subscription, FREE hosting, Jamstack alternative to Shopify, WooCommerce, and Magento.*
+
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Click_Here-brightgreen?style=for-the-badge&logo=digitalocean)](https://flashstore-lulze.ondigitalocean.app/)
+[![Hire Me](https://img.shields.io/badge/Available_for_Hire-Contact_Me-blue?style=for-the-badge&logo=mail.ru)](#-need-customization-or-professional-deployment)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Lighthouse Score](https://img.shields.io/badge/Lighthouse-100%2F100-brightgreen.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Build Status](https://img.shields.io/badge/Build-Passing-success.svg)]()
 
-[Live Demo](https://FlashStore.digitalocean.app) • [Documentation](#quick-start) • [Report Bug](https://github.com/muhammad-shariq/FlashStore/issues)
+[🌐 View Live Demo Store](https://flashstore-lulze.ondigitalocean.app/) • [📖 Quick Start](#-quick-start) • [💼 Hire for Custom Work](#-need-customization-or-professional-deployment)
 
 </div>
 
